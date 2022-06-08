@@ -1,6 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  creationTimestamp: null
   labels:
     app: mongo-client
   name: mongo-client
@@ -9,8 +10,10 @@ spec:
   selector:
     matchLabels:
       app: mongo-client
+  strategy: {}
   template:
     metadata:
+      creationTimestamp: null
       labels:
         app: mongo-client
     spec:
@@ -19,6 +22,6 @@ spec:
         name: mongo-client
         env:
         - name: mongo-client_INITDB_ROOT_USERNAME
-          value: 'root'
+          value: 'dummy'
         - name: mongo-client_INITDB_ROOT_PASSWORD
-          value: 'csc3004'
+          value: 'dummy'
