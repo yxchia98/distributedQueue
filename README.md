@@ -30,3 +30,13 @@ To get external endpoint for service:
 minikube service mongo-nodeport-service --url
 minikube service mongoexpress-nodeport-service --url
 ```
+
+Tearing down cluster:
+
+```
+kubectl delete deployment mongo mongo-express
+kubectl delete service mongo-nodeport-service mongoexpress-nodeport-service
+kubectl delete pvc mongo-data
+kubectl delete secret mongo-creds
+kubectl delete configmap mongo-configmap
+```
