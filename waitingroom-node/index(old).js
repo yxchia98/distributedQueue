@@ -22,7 +22,25 @@ const waitingroom_proto =
 const dbClient = new MongoClient(DB_URL, {
   useUnifiedTopology: true,
 });
-let api = null;
+
+/**
+ * Implements the SayHello RPC method.
+ */
+function sayHello(call, callback) {
+  callback(null, { message: "Hello " + call.request.name });
+}
+
+function enqueue(call, callback) {
+  callback(null, queueCustomer(call.request));
+}
+
+function dequeueRandomCustomer(call, callback) {
+  callback(null, dequeueRandom());
+}
+
+function dequeueFirstCustomer(call, callback) {
+  callback(null, dequeueFirst());
+}
 
 const queueCustomer = async (details) => {
   console.log(details);
@@ -84,9 +102,11 @@ const dequeueFirst = async () => {
 async function connectDB() {
   try {
     await dbClient.connect();
-    let db = await dbClient.db("waitingroom");
+    let db = await dbClient.db(process.env.DB_NAME);
     db.command({ ping: 1 });
     console.log("Connected successfully to mongo server");
+    // Create index
+    await db.collection("users").createIndex({ email: 1 });
 
     // Init api
     api = new API(db, grpc);
@@ -101,17 +121,26 @@ async function connectDB() {
  */
 async function main() {
   // connect to mongoDB
-
-  await connectDB().catch(console.dir);
-
+  // mongoose
+  //   .connect(DB_URL, {
+  //     useNewUrlParser: true,
+  //     useUnifiedTopology: true,
+  //     dbName: "waitingroom",
+  //   })
+  //   .then(() => {
+  //     console.log("Database connection is ready...");
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
   // setup GRPC
   var server = new grpc.Server();
   server.addService(waitingroom_proto.Enqueue.service, {
-    enqueueCustomer: api.enqueueCustomer,
+    enqueueCustomer: enqueue,
   });
   server.addService(waitingroom_proto.Dequeue.service, {
-    dequeueRandomCustomer: api.dequeueRandomCustomer,
-    dequeueFirstCustomer: api.dequeueFirstCustomer,
+    dequeueRandomCustomer: dequeueRandomCustomer,
+    dequeueFirstCustomer: dequeueFirstCustomer,
   });
   server.bindAsync(
     "0.0.0.0:50051",

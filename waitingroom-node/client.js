@@ -1,21 +1,3 @@
-/*
- *
- * Copyright 2015 gRPC authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
-
 var PROTO_PATH = __dirname + "/protos/waitingroom.proto";
 
 var parseArgs = require("minimist");
@@ -30,17 +12,8 @@ var packageDefinition = protoLoader.loadSync(PROTO_PATH, {
 });
 var waitingroom_proto =
   grpc.loadPackageDefinition(packageDefinition).waitingroom;
-
+var target = "localhost:50051";
 function main() {
-  var argv = parseArgs(process.argv.slice(2), {
-    string: "target",
-  });
-  var target;
-  if (argv.target) {
-    target = argv.target;
-  } else {
-    target = "localhost:50051";
-  }
   var client = new waitingroom_proto.Greeter(
     target,
     grpc.credentials.createInsecure()
@@ -57,7 +30,6 @@ function main() {
 }
 
 const queueCustomer = () => {
-  let target = "localhost:50051";
   var client = new waitingroom_proto.Enqueue(
     target,
     grpc.credentials.createInsecure()
@@ -73,5 +45,27 @@ const queueCustomer = () => {
   );
 };
 
+const dequeueRandom = () => {
+  var client = new waitingroom_proto.Dequeue(
+    target,
+    grpc.credentials.createInsecure()
+  );
+  client.dequeueRandomCustomer({}, function (err, response) {
+    console.log(response);
+  });
+};
+
+const dequeueFirst = () => {
+  var client = new waitingroom_proto.Dequeue(
+    target,
+    grpc.credentials.createInsecure()
+  );
+  client.dequeueFirstCustomer({}, function (err, response) {
+    console.log(response);
+  });
+};
+
+// dequeueRandom();
+// dequeueFirst();
 queueCustomer();
 // main();
