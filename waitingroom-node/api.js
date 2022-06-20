@@ -20,32 +20,42 @@ module.exports = class API {
       outTime: null,
     };
     queue
-      .find({ ipaddr: call.request.ipaddr })
+      .find({ phonenum: call.request.phonenum })
       .toArray()
-      .then((ipaddrs) => {
-        if (ipaddrs.length > 0) {
-          const sameMac = ipaddrs.filter(
-            (element) => element.macaddr == call.request.macaddr
-          );
-          if (sameMac.length > 0) {
-            console.log("duplicate customer");
-            callback(null, { status: "unauthorized" });
-          } else {
-            queue.insertOne(customer).then((r) => {
-              callback(null, { status: "added to queue" });
-            });
-          }
+      .then((phonenums) => {
+        if (phonenums.length > 0) {
+          console.log("duplicate customer");
+          callback(null, { status: "unauthorized" });
         } else {
           queue
-            .find({ macaddr: call.request.macaddr })
+            .find({ ipaddr: call.request.ipaddr })
             .toArray()
-            .then((macaddrs) => {
-              if (macaddrs.length == 0) {
-                queue.insertOne(customer).then((r) => {
-                  callback(null, { status: "added to queue" });
-                });
+            .then((ipaddrs) => {
+              if (ipaddrs.length > 0) {
+                const sameMac = ipaddrs.filter(
+                  (element) => element.macaddr == call.request.macaddr
+                );
+                if (sameMac.length > 0) {
+                  console.log("duplicate customer");
+                  callback(null, { status: "unauthorized" });
+                } else {
+                  queue.insertOne(customer).then((r) => {
+                    callback(null, { status: "added to queue" });
+                  });
+                }
               } else {
-                callback(null, { status: "unauthorized" });
+                queue
+                  .find({ macaddr: call.request.macaddr })
+                  .toArray()
+                  .then((macaddrs) => {
+                    if (macaddrs.length == 0) {
+                      queue.insertOne(customer).then((r) => {
+                        callback(null, { status: "added to queue" });
+                      });
+                    } else {
+                      callback(null, { status: "unauthorized" });
+                    }
+                  });
               }
             });
         }

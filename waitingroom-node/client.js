@@ -36,7 +36,7 @@ const queueCustomer = () => {
   );
   let ipaddr = "127.0.0.6";
   let macaddr = "AD:GS:VD:6E:1C:C6";
-  let phonenum = "92837162";
+  let phonenum = "92837166";
   client.enqueueCustomer(
     { ipaddr: ipaddr, macaddr: macaddr, phonenum: phonenum },
     function (err, response) {
@@ -66,6 +66,6 @@ const dequeueFirst = () => {
 };
 
 // dequeueRandom();
-dequeueFirst();
-// queueCustomer();
+// dequeueFirst();
+queueCustomer();
 // main();
