@@ -34,8 +34,8 @@ const queueCustomer = () => {
     target,
     grpc.credentials.createInsecure()
   );
-  let ipaddr = "127.0.0.1";
-  let macaddr = "AD:GS:VD:WE:12:CS";
+  let ipaddr = "127.0.0.6";
+  let macaddr = "AD:GS:VD:6E:1C:C6";
   let phonenum = "92837162";
   client.enqueueCustomer(
     { ipaddr: ipaddr, macaddr: macaddr, phonenum: phonenum },
@@ -66,6 +66,6 @@ const dequeueFirst = () => {
 };
 
 // dequeueRandom();
-// dequeueFirst();
-queueCustomer();
+dequeueFirst();
+// queueCustomer();
 // main();
