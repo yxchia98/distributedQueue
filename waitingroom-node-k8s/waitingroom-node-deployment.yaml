@@ -33,3 +33,13 @@ spec:
                 configMapKeyRef:
                   name: mongo-configmap
                   key: database_url
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: mongo-configmap
+                  key: waitingroom_port
+            - name: PROTO_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: mongo-configmap
+                  key: waitingroom_proto_path
