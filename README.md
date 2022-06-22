@@ -46,6 +46,8 @@ kubectl delete service mongo-nodeport-service mongoexpress-nodeport-service
 kubectl delete pvc mongo-data
 kubectl delete secret mongo-creds
 kubectl delete configmap mongo-configmap
+kubectl delete deployment waitingroom-node
+kubectl delete service waitingroom-node-nodeport-service
 ```
 
 Setup docker containers for dev environment (mongo and mongo-express):
