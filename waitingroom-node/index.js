@@ -1,10 +1,10 @@
 const { MongoClient } = require("mongodb");
 const API = require("./api");
+require("dotenv").config();
 
-const PROTO_PATH = __dirname + "/protos/waitingroom.proto";
-// const DB_URL =
-//   "mongodb://adminuser:csc3004@mongo-nodeport-service:27017/?authSource=admin";
-const DB_URL = "mongodb://adminuser:csc3004@localhost:27017/?authSource=admin";
+const PROTO_PATH = __dirname + process.env.PROTO_PATH;
+const DB_URL = process.env.DB_URL;
+const PORT = process.env.PORT;
 
 const grpc = require("@grpc/grpc-js");
 const protoLoader = require("@grpc/proto-loader");
@@ -55,7 +55,7 @@ async function main() {
     dequeueFirstCustomer: api.dequeueFirstCustomer,
   });
   server.bindAsync(
-    "0.0.0.0:50051",
+    `0.0.0.0:${PORT}`,
     grpc.ServerCredentials.createInsecure(),
     () => {
       server.start();
