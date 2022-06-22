@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: waitingroom-node
+  name: waitingroom-node
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: waitingroom-node
+  template:
+    metadata:
+      labels:
+        app: waitingroom-node
+    spec:
+      containers:
+        - image: yxchia98/waitingroom-node
+          name: waitingroom-node
+          env:
+            - name: ADMINUSERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-creds
+                  key: username
+            - name: ADMINPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-creds
+                  key: password
+            - name: DB_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: mongo-configmap
+                  key: database_url
