@@ -10,18 +10,24 @@ minikube stop
 To provision MongoDB Deployment:
 
 ```
-kubectl create -f ./mongo/mongo-pvc.yaml
-kubectl create -f ./mongo/mongo-secrets.yaml
-kubectl create -f ./mongo/mongo-deployment.yaml
-kubectl create -f ./mongo/mongo-nodeport-service.yaml
+kubectl create -f ./mongo-k8s/mongo-pvc.yaml
+kubectl create -f ./mongo-k8s/mongo-secrets.yaml
+kubectl create -f ./mongo-k8s/mongo-deployment.yaml
+kubectl create -f ./mongo-k8s/mongo-nodeport-service.yaml
 ```
 
 To provision MongoDB-Express GUI Deployment:
 
 ```
-kubectl create -f ./mongo-express/mongo-configmap.yaml
-kubectl create -f ./mongo-express/mongoexpress-deployment.yaml
-kubectl create -f ./mongo-express/mongoexpress-nodeport-service.yaml
+kubectl create -f ./mongo-express-k8s/mongo-configmap.yaml
+kubectl create -f ./mongo-express-k8s/mongoexpress-deployment.yaml
+kubectl create -f ./mongo-express-k8s/mongoexpress-nodeport-service.yaml
+```
+
+To provision Waitingroom Nodejs GRPC server Deployment:
+```
+kubectl create -f ./waitingroom-node-k8s/waitingroom-node-deployment.yaml
+kubectl create -f ./waitingroom-node-k8s/waitingroom-node-nodeport-service.yaml
 ```
 
 To get external endpoint for service:
@@ -29,6 +35,7 @@ To get external endpoint for service:
 ```
 minikube service mongo-nodeport-service --url
 minikube service mongoexpress-nodeport-service --url
+minikube service waitingroom-node-nodeport-service --url
 ```
 
 Tearing down cluster:
