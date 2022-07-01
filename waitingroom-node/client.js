@@ -12,7 +12,7 @@ var packageDefinition = protoLoader.loadSync(PROTO_PATH, {
 });
 var waitingroom_proto =
   grpc.loadPackageDefinition(packageDefinition).waitingroom;
-var target = "172.20.242.102:32002";
+var target = "172.20.249.3:32003";
 function main() {
   var client = new waitingroom_proto.Greeter(
     target,
@@ -65,7 +65,7 @@ const dequeueFirst = () => {
   });
 };
 
-dequeueRandom();
+// dequeueRandom();
 // dequeueFirst();
-// queueCustomer();
+queueCustomer();
 // main();
