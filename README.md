@@ -7,12 +7,28 @@ minikube start
 minikube stop
 ```
 
+Deploying Distributed Queue Kubernetes Cluster:
+
+```
+kubectl apply -k ./dashboard
+kubectl apply -k ./mongo-k8s
+kubectl apply -k ./mongo-express-k8s
+kubectl apply -k ./queue-server-k8s
+```
+
+Tearing down cluster:
+
+```
+kubectl delete -k ./dashboard
+kubectl delete -k ./mongo-k8s
+kubectl delete -k ./mongo-express-k8s
+kubectl delete -k ./queue-server-k8s
+```
+
 Deploy Kubernetes Dashboard (http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/):
 
 ```
-kubectl apply -f .\dashboard\dashboard.yaml
-kubectl apply -f .\dashboard\dashboard-acc.yaml
-kubectl apply -f .\dashboard\dashboard-clusterrolebinding.yaml
+kubectl apply -k ./dashboard
 kubectl -n kubernetes-dashboard create token admin-user
 # copy the generated token
 kubectl proxy
@@ -21,25 +37,19 @@ kubectl proxy
 To provision MongoDB Deployment:
 
 ```
-kubectl create -f ./mongo-k8s/mongo-pvc.yaml
-kubectl create -f ./mongo-k8s/mongo-secrets.yaml
-kubectl create -f ./mongo-k8s/mongo-deployment.yaml
-kubectl create -f ./mongo-k8s/mongo-nodeport-service.yaml
+kubectl apply -k ./mongo-k8s
 ```
 
 To provision MongoDB-Express GUI Deployment:
 
 ```
-kubectl create -f ./mongo-express-k8s/mongo-configmap.yaml
-kubectl create -f ./mongo-express-k8s/mongoexpress-deployment.yaml
-kubectl create -f ./mongo-express-k8s/mongoexpress-nodeport-service.yaml
+kubectl apply -k ./mongo-express-k8s
 ```
 
 To provision Waitingroom Nodejs GRPC server Deployment:
 
 ```
-kubectl create -f ./waitingroom-node-k8s/waitingroom-node-deployment.yaml
-kubectl create -f ./waitingroom-node-k8s/waitingroom-node-nodeport-service.yaml
+kubectl delete -k ./queue-server-k8s
 ```
 
 To get external endpoint for service:
@@ -48,18 +58,6 @@ To get external endpoint for service:
 minikube service mongo-nodeport-service --url
 minikube service mongoexpress-nodeport-service --url
 minikube service waitingroom-node-nodeport-service --url
-```
-
-Tearing down cluster:
-
-```
-kubectl delete deployment mongo mongo-express
-kubectl delete service mongo-nodeport-service mongoexpress-nodeport-service
-kubectl delete pvc mongo-data
-kubectl delete secret mongo-creds
-kubectl delete configmap mongo-configmap
-kubectl delete deployment waitingroom-node
-kubectl delete service waitingroom-node-nodeport-service
 ```
 
 Setup docker containers for dev environment (mongo and mongo-express):
