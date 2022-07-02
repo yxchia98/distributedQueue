@@ -10,6 +10,7 @@ minikube stop
 Deploy Kubernetes Dashboard (http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/):
 
 ```
+kubectl apply -f .\dashboard\dashboard.yaml
 kubectl apply -f .\dashboard\dashboard-acc.yaml
 kubectl apply -f .\dashboard\dashboard-clusterrolebinding.yaml
 kubectl -n kubernetes-dashboard create token admin-user
