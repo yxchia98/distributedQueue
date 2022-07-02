@@ -6,15 +6,22 @@ service WaitingRoom {
     rpc EnqueueCustomer (EnqueueCustomerRequest) returns (EnqueueCustomerReply){};
     rpc WaitQueue (WaitQueueRequest) returns (stream WaitQueueReply){};
 }
-service Dispatch{
+service Dequeue{
   rpc DequeueRandomCustomer (DequeueCustomerRequest) returns (DequeueCustomerReply){};
   rpc DequeueFirstCustomer (DequeueCustomerRequest) returns (DequeueCustomerReply){};
+}
+service Validator{
+  rpc ValidateToken (ValidateTokenRequest) returns (ValidateTokenReply){};
 }
 
 message EnqueueCustomerRequest{
     string ipaddr = 1;
     string macaddr = 2;
     string phonenum = 3;
+}
+
+message EnqueueCustomerReply{
+  string status = 1;
 }
 
 message WaitQueueRequest{
@@ -24,13 +31,12 @@ message WaitQueueRequest{
 }
 
 message WaitQueueReply{
+  string ipaddr = 1;
+  string url = 2;
+  string token = 3;
 }
 
 message DequeueCustomerRequest{
-}
-
-message EnqueueCustomerReply{
-    string status = 1;
 }
 
 message DequeueCustomerReply{
@@ -39,4 +45,15 @@ message DequeueCustomerReply{
   string phonenum = 3;
   string inTime = 4;
   string outTime = 5;
+}
+
+message ValidateTokenRequest{
+  string ipaddr = 1;
+  string macaddr = 2;
+  string phonenum = 3;
+  string token = 4;
+}
+
+message ValidateTokenReply{
+  string validated = 1;
 }

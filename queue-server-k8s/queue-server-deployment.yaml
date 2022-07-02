@@ -2,21 +2,21 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: waitingroom-node
-  name: waitingroom-node
+    app: queue-server
+  name: queue-server
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: waitingroom-node
+      app: queue-server
   template:
     metadata:
       labels:
-        app: waitingroom-node
+        app: queue-server
     spec:
       containers:
-        - image: yxchia98/waitingroom-node
-          name: waitingroom-node
+        - image: yxchia98/queue-server
+          name: queue-server
           env:
             - name: ADMINUSERNAME
               valueFrom:

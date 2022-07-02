@@ -1,6 +1,8 @@
 const { toArray, update } = require("lodash");
 
 const ObjectId = require("mongodb").ObjectId;
+const bcrypt = require("bcrypt");
+const salt = "csc3004";
 
 module.exports = class API {
   constructor(db, grpc) {
@@ -15,6 +17,7 @@ module.exports = class API {
       ipaddr: call.request.ipaddr,
       macaddr: call.request.macaddr,
       phonenum: call.request.phonenum,
+      token: "",
       inqueue: true,
       inTime: new Date(),
       outTime: null,
@@ -62,6 +65,19 @@ module.exports = class API {
       });
   };
 
+  waitQueue = (call, callback) => {
+    console.log("streaming for queue status for customer");
+    const queue = this.db.collection("queues");
+    let customer = {
+      ipaddr: call.request.ipaddr,
+      macaddr: call.request.macaddr,
+      phonenum: call.request.phonenum,
+      inqueue: true,
+      inTime: new Date(),
+      outTime: null,
+    };
+  };
+
   dequeueFirstCustomer = (call, callback) => {
     console.log("dequeueing first customer");
     const queue = this.db.collection("queues");
@@ -77,13 +93,15 @@ module.exports = class API {
           let selected = results[0];
           const filter = { _id: selected._id };
           const options = { upsert: false };
-          const updateDoc = { $set: { inqueue: false, outTime: new Date() } };
+          const token = await bcrypt.hash((selected.ipaddr).concat(selected.macaddr).concat(selected.phonenum), salt)// hashing for token
+          const updateDoc = { $set: { inqueue: false, outTime: new Date(), token: token } };
           queue.updateOne(filter, updateDoc, options).then((r) => {
             if (r.acknowledged) {
               let result = {
                 ipaddr: selected.ipaddr,
                 macaddr: selected.macaddr,
                 phonenum: selected.phonenum,
+                token: token,
                 inTime: selected.inTime.toISOString(),
                 outTime: updateDoc.$set.outTime.toISOString(),
               };
@@ -115,13 +133,15 @@ module.exports = class API {
               : results[0]; // randomly select a person in queue
           const filter = { _id: selected._id };
           const options = { upsert: false };
-          const updateDoc = { $set: { inqueue: false, outTime: new Date() } };
+          const token = await bcrypt.hash((selected.ipaddr).concat(selected.macaddr).concat(selected.phonenum), salt)   // hashing for token
+          const updateDoc = { $set: { inqueue: false, outTime: new Date(), token: token } };
           queue.updateOne(filter, updateDoc, options).then((r) => {
             if (r.acknowledged) {
               let result = {
                 ipaddr: selected.ipaddr,
                 macaddr: selected.macaddr,
                 phonenum: selected.phonenum,
+                token: token,
                 inTime: selected.inTime.toISOString(),
                 outTime: updateDoc.$set.outTime.toISOString(),
               };
@@ -131,6 +151,34 @@ module.exports = class API {
               callback(null, this.nullCustomer);
             }
           });
+        }
+      });
+  };
+
+  validateToken = (call, callback) => {
+    console.log("validating token");
+    const queue = this.db.collection("queues");
+    queue
+      .find({
+        inqueue: false,
+        ipaddr: call.request.ipaddr,
+        macaddr: call.request.macaddr,
+        phonenum: call.request.phonenum,
+        token: call.request.token,
+      })
+      .toArray()
+      .then((results) => {
+        if (results.length == 0) {
+          console.log("token is invalid!");
+          let res = {
+            validated: false,
+          };
+          callback(null, res);
+        } else {
+          let res = {
+            validaed: true,
+          };
+          callback(null, res);
         }
       });
   };

@@ -47,12 +47,16 @@ async function main() {
 
   // setup GRPC
   var server = new grpc.Server();
-  server.addService(waitingroom_proto.Enqueue.service, {
+  server.addService(waitingroom_proto.WaitingRoom.service, {
     enqueueCustomer: api.enqueueCustomer,
+    waitQueue: api.waitQueue,
   });
   server.addService(waitingroom_proto.Dequeue.service, {
     dequeueRandomCustomer: api.dequeueRandomCustomer,
     dequeueFirstCustomer: api.dequeueFirstCustomer,
+  });
+  server.addService(waitingroom_proto.Validator.service, {
+    validateToken: api.validateToken,
   });
   server.bindAsync(
     `0.0.0.0:${PORT}`,
