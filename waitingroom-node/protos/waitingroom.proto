@@ -2,10 +2,11 @@ syntax = "proto3";
 
 package waitingroom;
 
-service Enqueue {
+service WaitingRoom {
     rpc EnqueueCustomer (EnqueueCustomerRequest) returns (EnqueueCustomerReply){};
+    rpc WaitQueue (WaitQueueRequest) returns (stream WaitQueueReply){};
 }
-service Dequeue{
+service Dispatch{
   rpc DequeueRandomCustomer (DequeueCustomerRequest) returns (DequeueCustomerReply){};
   rpc DequeueFirstCustomer (DequeueCustomerRequest) returns (DequeueCustomerReply){};
 }
@@ -14,6 +15,15 @@ message EnqueueCustomerRequest{
     string ipaddr = 1;
     string macaddr = 2;
     string phonenum = 3;
+}
+
+message WaitQueueRequest{
+  string ipaddr = 1;
+  string macaddr = 2;
+  string phonenum = 3;
+}
+
+message WaitQueueReply{
 }
 
 message DequeueCustomerRequest{
