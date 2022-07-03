@@ -2,7 +2,7 @@ const { toArray, update } = require("lodash");
 
 const ObjectId = require("mongodb").ObjectId;
 const bcrypt = require("bcrypt");
-const salt = "csc3004";
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 module.exports = class API {
   constructor(db, grpc) {
@@ -10,7 +10,7 @@ module.exports = class API {
     this.grpc = grpc;
   }
 
-  enqueueCustomer = (call, callback) => {
+  enqueueCustomer = async (call, callback) => {
     console.log("enqueueing customer");
     const queue = this.db.collection("queues");
     let customer = {
@@ -65,27 +65,35 @@ module.exports = class API {
       });
   };
 
-  waitQueue = (call, callback) => {
+  waitQueue = async (call, callback) => {
     console.log("streaming for queue status for customer");
     const queue = this.db.collection("queues");
+    checking = true;
+    while (checking) {
+      const query = {
+        ipaddr: call.request.ipaddr,
+        macaddr: call.request.macaddr,
+        phonenum: call.request.phonenum,
+        inqueue: false,
+      };
+      queue.find(query).toArray();
+      await sleep(5000);
+    }
     let customer = {
       ipaddr: call.request.ipaddr,
       macaddr: call.request.macaddr,
       phonenum: call.request.phonenum,
-      inqueue: true,
-      inTime: new Date(),
-      outTime: null,
     };
   };
 
-  dequeueFirstCustomer = (call, callback) => {
+  dequeueFirstCustomer = async (call, callback) => {
     console.log("dequeueing first customer");
     const queue = this.db.collection("queues");
     queue
       .find({ inqueue: true })
       .sort({ inTime: 1 })
       .toArray()
-      .then((results) => {
+      .then(async (results) => {
         if (results.length == 0) {
           console.log("no customers to dequeue");
           callback(null, this.nullCustomer());
@@ -93,8 +101,14 @@ module.exports = class API {
           let selected = results[0];
           const filter = { _id: selected._id };
           const options = { upsert: false };
-          const token = await bcrypt.hash((selected.ipaddr).concat(selected.macaddr).concat(selected.phonenum), salt)// hashing for token
-          const updateDoc = { $set: { inqueue: false, outTime: new Date(), token: token } };
+          const salt = await bcrypt.genSalt(10);
+          const token = await bcrypt.hash(
+            selected.ipaddr.concat(selected.macaddr).concat(selected.phonenum),
+            salt
+          ); // hashing for token
+          const updateDoc = {
+            $set: { inqueue: false, outTime: new Date(), token: token },
+          };
           queue.updateOne(filter, updateDoc, options).then((r) => {
             if (r.acknowledged) {
               let result = {
@@ -116,13 +130,13 @@ module.exports = class API {
       });
   };
 
-  dequeueRandomCustomer = (call, callback) => {
+  dequeueRandomCustomer = async (call, callback) => {
     console.log("dequeueing random customer");
     const queue = this.db.collection("queues");
     queue
       .find({ inqueue: true })
       .toArray()
-      .then((results) => {
+      .then(async (results) => {
         if (results.length == 0) {
           console.log("no customers to dequeue");
           callback(null, this.nullCustomer);
@@ -133,8 +147,14 @@ module.exports = class API {
               : results[0]; // randomly select a person in queue
           const filter = { _id: selected._id };
           const options = { upsert: false };
-          const token = await bcrypt.hash((selected.ipaddr).concat(selected.macaddr).concat(selected.phonenum), salt)   // hashing for token
-          const updateDoc = { $set: { inqueue: false, outTime: new Date(), token: token } };
+          const salt = await bcrypt.genSalt(10);
+          const token = await bcrypt.hash(
+            selected.ipaddr.concat(selected.macaddr).concat(selected.phonenum),
+            salt
+          ); // hashing for token
+          const updateDoc = {
+            $set: { inqueue: false, outTime: new Date(), token: token },
+          };
           queue.updateOne(filter, updateDoc, options).then((r) => {
             if (r.acknowledged) {
               let result = {
