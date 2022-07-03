@@ -32,8 +32,11 @@ message WaitQueueRequest{
 
 message WaitQueueReply{
   string ipaddr = 1;
-  string url = 2;
-  string token = 3;
+  string macaddr = 2;
+  string phonenum = 3;
+  string token = 4;
+  string url = 5;
+  bool selected = 6;
 }
 
 message DequeueCustomerRequest{

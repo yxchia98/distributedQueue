@@ -1,5 +1,5 @@
 const { toArray, update } = require("lodash");
-
+require("dotenv").config();
 const ObjectId = require("mongodb").ObjectId;
 const bcrypt = require("bcrypt");
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -66,7 +66,9 @@ module.exports = class API {
   };
 
   waitQueue = async (call, callback) => {
-    console.log("streaming for queue status for customer");
+    console.log(
+      `streaming for queue status for ${call.request.ipaddr}, ${call.request.macaddr}, ${call.request.phoenum}`
+    );
     const queue = this.db.collection("queues");
     checking = true;
     while (checking) {
@@ -76,14 +78,39 @@ module.exports = class API {
         phonenum: call.request.phonenum,
         inqueue: false,
       };
-      queue.find(query).toArray();
+      queue
+        .find(query)
+        .toArray()
+        .then(async (results) => {
+          let res = {
+            ipaddr: call.request.ipaddr,
+            macaddr: call.request.macaddr,
+            phonenum: call.request.phonenum,
+            token: "",
+            url: "",
+            selected: false,
+          };
+          if (results.length > 0) {
+            let selected = results[0];
+            res = {
+              ipaddr: selected.ipaddr,
+              macaddr: selected.macaddr,
+              phonenum: selected.phonenum,
+              token: selected.token,
+              url: process.env.ENDPOINT_URL,
+              selected: true,
+            };
+            call.write(res);
+            if (res.selected) {
+              console.log(
+                `selected ${call.request.ipaddr}, ${call.request.macaddr}, ${call.request.phoenum}, streaming back and closing...`
+              );
+              call.end();
+            }
+          }
+        });
       await sleep(5000);
     }
-    let customer = {
-      ipaddr: call.request.ipaddr,
-      macaddr: call.request.macaddr,
-      phonenum: call.request.phonenum,
-    };
   };
 
   dequeueFirstCustomer = async (call, callback) => {
@@ -178,14 +205,15 @@ module.exports = class API {
   validateToken = (call, callback) => {
     console.log("validating token");
     const queue = this.db.collection("queues");
+    query = {
+      inqueue: false,
+      ipaddr: call.request.ipaddr,
+      macaddr: call.request.macaddr,
+      phonenum: call.request.phonenum,
+      token: call.request.token,
+    };
     queue
-      .find({
-        inqueue: false,
-        ipaddr: call.request.ipaddr,
-        macaddr: call.request.macaddr,
-        phonenum: call.request.phonenum,
-        token: call.request.token,
-      })
+      .find(query)
       .toArray()
       .then((results) => {
         if (results.length == 0) {
@@ -196,7 +224,7 @@ module.exports = class API {
           callback(null, res);
         } else {
           let res = {
-            validaed: true,
+            validated: true,
           };
           callback(null, res);
         }
