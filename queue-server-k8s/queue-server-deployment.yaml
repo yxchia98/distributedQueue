@@ -4,6 +4,7 @@ metadata:
   labels:
     app: queue-server
   name: queue-server
+  namespace: queue-management
 spec:
   replicas: 3
   selector:

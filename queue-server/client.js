@@ -66,7 +66,7 @@ const dequeueFirst = () => {
   });
 };
 
-dequeueRandom();
+// dequeueRandom();
 // dequeueFirst();
-// queueCustomer();
+queueCustomer();
 // main();

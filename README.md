@@ -34,6 +34,12 @@ kubectl -n kubernetes-dashboard create token admin-user
 kubectl proxy
 ```
 
+Inject Linkerd:
+
+```
+kubectl get -n queue-management deploy -o yaml | linkerd inject - | kubectl apply -f -
+```
+
 To provision MongoDB Deployment:
 
 ```
