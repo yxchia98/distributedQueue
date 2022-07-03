@@ -4,7 +4,7 @@ require("dotenv").config();
 
 const PROTO_PATH = __dirname + process.env.PROTO_PATH;
 const DB_URL = `mongodb://${process.env.ADMINUSERNAME}:${process.env.ADMINPASSWORD}@${process.env.DB_URL}:27017/?authSource=admin`;
-// const DB_URL = `mongodb+srv://adminuser:csc3004@cluster0.3tvzq.mongodb.net/?retryWrites=true&w=majority`;
+// const DB_URL = `mongodb+srv://${process.env.ADMINUSERNAME}:${process.env.ADMINPASSWORD}@cluster0.3tvzq.mongodb.net/?retryWrites=true&w=majority`;
 const PORT = process.env.PORT;
 
 const grpc = require("@grpc/grpc-js");
