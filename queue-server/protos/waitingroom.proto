@@ -51,10 +51,7 @@ message DequeueCustomerReply{
 }
 
 message ValidateTokenRequest{
-  string ipaddr = 1;
-  string macaddr = 2;
-  string phonenum = 3;
-  string token = 4;
+  string token = 1;
 }
 
 message ValidateTokenReply{
