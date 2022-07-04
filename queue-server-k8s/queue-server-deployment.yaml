@@ -5,7 +5,7 @@ metadata:
     app: queue-server
   name: queue-server
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: queue-server
@@ -13,6 +13,9 @@ spec:
     metadata:
       labels:
         app: queue-server
+      annotations:
+        linkerd.io/inject: enabled
+        config.linkerd.io/proxy-cpu-request: "0.1"
     spec:
       containers:
         - image: yxchia98/queue-server
