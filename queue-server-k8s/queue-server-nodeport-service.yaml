@@ -4,7 +4,6 @@ metadata:
   labels:
     app: queue-server
   name: queue-server-nodeport-service
-  namespace: queue-management
 spec:
   type: NodePort
   selector:

@@ -12,7 +12,7 @@ var packageDefinition = protoLoader.loadSync(PROTO_PATH, {
 });
 var waitingroom_proto =
   grpc.loadPackageDefinition(packageDefinition).waitingroom;
-var target = "172.20.245.180:32003";
+var target = "172.20.247.51:32003";
 // var target = "localhost:50051";
 function main() {
   var client = new waitingroom_proto.Greeter(
@@ -35,9 +35,9 @@ const queueCustomer = () => {
     target,
     grpc.credentials.createInsecure()
   );
-  let ipaddr = "127.0.0.2";
-  let macaddr = "AD:GS:VD:6E:1D:A2";
-  let phonenum = "92837122";
+  let ipaddr = "127.0.0.4";
+  let macaddr = "AD:GS:VD:6E:1D:A4";
+  let phonenum = "92837124";
   client.enqueueCustomer(
     { ipaddr: ipaddr, macaddr: macaddr, phonenum: phonenum },
     function (err, response) {
@@ -66,7 +66,7 @@ const dequeueFirst = () => {
   });
 };
 
-// dequeueRandom();
+dequeueRandom();
 // dequeueFirst();
-queueCustomer();
+// queueCustomer();
 // main();

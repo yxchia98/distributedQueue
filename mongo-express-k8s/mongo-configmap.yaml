@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: mongo-configmap
-data:
-  database_url: "mongo-nodeport-service"
-  waitingroom_port: "50051"
-  waitingroom_proto_path: "/protos/waitingroom.proto"
-  k8s_ip: "172.20.255.232"

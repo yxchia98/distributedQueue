@@ -4,7 +4,6 @@ metadata:
   labels:
     app: queue-server
   name: queue-server
-  namespace: queue-management
 spec:
   replicas: 3
   selector:
@@ -19,16 +18,16 @@ spec:
         - image: yxchia98/queue-server
           name: queue-server
           env:
-            - name: ADMINUSERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: mongo-creds
-                  key: username
-            - name: ADMINPASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: mongo-creds
-                  key: password
+            # - name: ADMINUSERNAME
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: mongo-creds
+            #       key: username
+            # - name: ADMINPASSWORD
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: mongo-creds
+            #       key: password
             - name: DB_URL
               valueFrom:
                 configMapKeyRef:
@@ -38,9 +37,9 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   name: mongo-configmap
-                  key: waitingroom_port
+                  key: queueserver_port
             - name: PROTO_PATH
               valueFrom:
                 configMapKeyRef:
                   name: mongo-configmap
-                  key: waitingroom_proto_path
+                  key: queueserver_proto_path
