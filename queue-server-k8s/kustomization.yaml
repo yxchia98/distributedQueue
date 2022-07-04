@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - queue-server-deployment.yaml
   - queue-server-nodeport-service.yaml
+  - queue-server-hpa.yaml

@@ -12,7 +12,7 @@ var packageDefinition = protoLoader.loadSync(PROTO_PATH, {
 });
 var waitingroom_proto =
   grpc.loadPackageDefinition(packageDefinition).waitingroom;
-var target = "172.20.248.224:32003";
+var target = "172.20.247.212:32003";
 // var target = "localhost:50051";
 function main() {
   var client = new waitingroom_proto.Greeter(
@@ -35,9 +35,9 @@ const queueCustomer = () => {
     target,
     grpc.credentials.createInsecure()
   );
-  let ipaddr = "127.0.0.4";
-  let macaddr = "AD:GS:VD:6E:1D:A4";
-  let phonenum = "92837124";
+  let ipaddr = "127.0.0.2";
+  let macaddr = "AD:GS:VD:6E:1D:A2";
+  let phonenum = "92837122";
   client.enqueueCustomer(
     { ipaddr: ipaddr, macaddr: macaddr, phonenum: phonenum },
     function (err, response) {
@@ -67,52 +67,41 @@ const dequeueFirst = () => {
 };
 
 const randomQueues = async (num) => {
-  var client = new waitingroom_proto.Dequeue(
-    target,
-    grpc.credentials.createInsecure()
-  );
   for (let i = 0; i < num; i++) {
+    var client = new waitingroom_proto.Dequeue(
+      target,
+      grpc.credentials.createInsecure()
+    );
     client.dequeueRandomCustomer({}, async function (err, response) {
       console.log(response);
     });
-    await sleep(250);
+    await sleep(500);
   }
 };
 
 const randomDequeues = async (num) => {
-  var client = new waitingroom_proto.WaitingRoom(
-    target,
-    grpc.credentials.createInsecure()
-  );
   for (let i = 0; i < num; i++) {
-    let ipaddr = makeid(6);
-    let macaddr = makeid(8);
-    let phonenum = makeid(8);
+    var client = new waitingroom_proto.WaitingRoom(
+      target,
+      grpc.credentials.createInsecure()
+    );
+    let ipaddr = i.toString();
+    let macaddr = i.toString();
+    let phonenum = i.toString();
     client.enqueueCustomer(
       { ipaddr: ipaddr, macaddr: macaddr, phonenum: phonenum },
       async function (err, response) {
         console.log(response);
       }
     );
-    await sleep(250);
+    await sleep(500);
   }
-};
-
-const makeid = async (length) => {
-  var result = "";
-  var characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  var charactersLength = characters.length;
-  for (var i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
 };
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-randomQueues(1000);
-randomDequeues(1000);
+randomQueues(500);
+randomDequeues(500);
 // dequeueRandom();
 // dequeueFirst();
 // queueCustomer();

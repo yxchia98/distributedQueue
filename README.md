@@ -3,35 +3,26 @@
 Start / Stop Minikube:
 
 ```
-minikube start
+minikube start --extra-config=kubelet.housekeeping-interval=10s
 minikube stop
+```
+
+Start Minikube Kubernetes Dashboard (open a new terminal):
+
+```
+minikube enable addons dashboard
+minikube enable addons metrics-server
+minikube dashboard
+# if not using Minikube
+kubectl apply -k ./dashboard
 ```
 
 Deploying Distributed Queue Kubernetes Cluster:
 
 ```
-kubectl apply -k ./dashboard
 kubectl apply -k ./mongo-k8s
 kubectl apply -k ./mongo-express-k8s
 kubectl apply -k ./queue-server-k8s
-```
-
-Tearing down cluster:
-
-```
-kubectl delete -k ./dashboard
-kubectl delete -k ./mongo-k8s
-kubectl delete -k ./mongo-express-k8s
-kubectl delete -k ./queue-server-k8s
-```
-
-Deploy Kubernetes Dashboard (http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/):
-
-```
-kubectl apply -k ./dashboard
-kubectl -n kubernetes-dashboard create token admin-user
-# copy the generated token
-kubectl proxy
 ```
 
 Inject Linkerd to all applications:
@@ -48,10 +39,21 @@ kubectl get deploy -o yaml | linkerd uninject - | kubectl apply -f -
 linkerd viz uninstall | kubectl delete -f -
 ```
 
-To provision Kubernetes Dashboard and Metrics-Server:
+Tearing down cluster:
+
+```
+kubectl delete -k ./mongo-k8s
+kubectl delete -k ./mongo-express-k8s
+kubectl delete -k ./queue-server-k8s
+```
+
+Deploy Kubernetes Dashboard without Minikube (http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/):
 
 ```
 kubectl apply -k ./dashboard
+kubectl -n kubernetes-dashboard create token admin-user
+# copy the generated token
+kubectl proxy
 ```
 
 To provision MongoDB StatefulSet:
