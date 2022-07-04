@@ -64,7 +64,7 @@ spec:
             - name: mongo-data-dir
               mountPath: /data/db
         - name: mongo-sidecar
-          image: cvallance/mongo-k8s-sidecar
+          image: yxchia98/mongo-k8s-sidecar
           env:
             - name: MONGO_SIDECAR_POD_LABELS
               value: "app=mongo"

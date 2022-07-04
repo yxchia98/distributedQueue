@@ -5,7 +5,7 @@ metadata:
     app: queue-server
   name: queue-server
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: queue-server
@@ -17,6 +17,13 @@ spec:
       containers:
         - image: yxchia98/queue-server
           name: queue-server
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
           env:
             # - name: ADMINUSERNAME
             #   valueFrom:
