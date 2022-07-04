@@ -20,6 +20,6 @@ spec:
           env:
             - name: ME_CONFIG_MONGODB_URL
               valueFrom:
-                configMapKeyRef:
-                  name: mongo-configmap
-                  key: database_url
+                secretKeyRef:
+                  name: mongo-creds
+                  key: db_access

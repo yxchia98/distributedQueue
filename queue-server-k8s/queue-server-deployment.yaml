@@ -30,9 +30,9 @@ spec:
             #       key: password
             - name: DB_URL
               valueFrom:
-                configMapKeyRef:
-                  name: mongo-configmap
-                  key: database_url
+                secretKeyRef:
+                  name: mongo-creds
+                  key: db_access
             - name: PORT
               valueFrom:
                 configMapKeyRef:

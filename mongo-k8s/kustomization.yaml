@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - mongo-configmap.yaml
+  - mongo-secrets.yaml
   - mongo-clusterrolebinding.yaml
   - mongo-statefulset.yaml
   - mongo-service.yaml
