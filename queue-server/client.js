@@ -109,6 +109,7 @@ const subscribeNotification = async () => {
   call.on('data', function(response){
     console.log(response.selected)
     if(response.selected){
+      console.log(response)
       console.log('Selected! Redirecting...')
     }
     else{
@@ -124,8 +125,8 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // randomQueues(500);
 // randomDequeues(500);
-// dequeueRandom();
-dequeueFirst();
+dequeueRandom();
+// dequeueFirst();
 // queueCustomer();
 // subscribeNotification()
 // main();

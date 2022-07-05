@@ -1,0 +1,6 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: queueserver-configmap
+data:
+  target_endpoint: "www.google.com"

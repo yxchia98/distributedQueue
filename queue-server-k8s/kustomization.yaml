@@ -2,6 +2,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
+  - queue-server-configmap.yaml
   - queue-server-deployment.yaml
   - queue-server-nodeport-service.yaml
   - queue-server-hpa.yaml

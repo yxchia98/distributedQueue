@@ -33,6 +33,11 @@ spec:
             #     secretKeyRef:
             #       name: mongo-creds
             #       key: password
+            - name: ENDPOINT_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: queueserver-configmap
+                  key: target_endpoint
             - name: DB_URL
               valueFrom:
                 secretKeyRef:
