@@ -15,7 +15,7 @@ module.exports = class API {
     const queue = this.db.collection("queues");
     let customer = {
       ipaddr: call.request.ipaddr,
-      macaddr: call.request.macaddr,
+      sessionId: call.request.sessionId,
       phonenum: call.request.phonenum,
       token: "",
       inqueue: true,
@@ -35,10 +35,10 @@ module.exports = class API {
             .toArray()
             .then((ipaddrs) => {
               if (ipaddrs.length > 0) {
-                const sameMac = ipaddrs.filter(
-                  (element) => element.macaddr == call.request.macaddr
+                const sameSessId = ipaddrs.filter(
+                  (element) => element.sessionId == call.request.sessionId
                 );
-                if (sameMac.length > 0) {
+                if (sameSessId.length > 0) {
                   console.log("duplicate customer");
                   callback(null, { status: "unauthorized" });
                 } else {
@@ -48,10 +48,10 @@ module.exports = class API {
                 }
               } else {
                 queue
-                  .find({ macaddr: call.request.macaddr })
+                  .find({ sessionId: call.request.sessionId })
                   .toArray()
-                  .then((macaddrs) => {
-                    if (macaddrs.length == 0) {
+                  .then((sessionIds) => {
+                    if (sessionIds.length == 0) {
                       queue.insertOne(customer).then((r) => {
                         callback(null, { status: "added to queue" });
                       });
@@ -67,14 +67,14 @@ module.exports = class API {
 
   waitQueue = async (call, callback) => {
     console.log(
-      `streaming for queue status for ${call.request.ipaddr}, ${call.request.macaddr}, ${call.request.phonenum}`
+      `streaming for queue status for ${call.request.ipaddr}, ${call.request.sessionId}, ${call.request.phonenum}`
     );
     const queue = this.db.collection("queues");
     let checking = true;
     while (checking) {
       const query = {
         ipaddr: call.request.ipaddr,
-        macaddr: call.request.macaddr,
+        sessionId: call.request.sessionId,
         phonenum: call.request.phonenum,
         inqueue: false,
       };
@@ -84,7 +84,7 @@ module.exports = class API {
         .then(async (results) => {
           let res = {
             ipaddr: call.request.ipaddr,
-            macaddr: call.request.macaddr,
+            sessionId: call.request.sessionId,
             phonenum: call.request.phonenum,
             token: "",
             url: "",
@@ -94,7 +94,7 @@ module.exports = class API {
             let selected = results[0];
             res = {
               ipaddr: selected.ipaddr,
-              macaddr: selected.macaddr,
+              sessionId: selected.sessionId,
               phonenum: selected.phonenum,
               token: selected.token,
               url: process.env.ENDPOINT_URL,
@@ -104,7 +104,7 @@ module.exports = class API {
           call.write(res);
           if (res.selected) {
             console.log(
-              `selected ${call.request.ipaddr}, ${call.request.macaddr}, ${call.request.phoenum}, streaming back and closing...`
+              `selected ${call.request.ipaddr}, ${call.request.sessionId}, ${call.request.phoenum}, streaming back and closing...`
             );
             call.end();
           }
@@ -130,7 +130,7 @@ module.exports = class API {
           const options = { upsert: false };
           const salt = await bcrypt.genSalt(10);
           const token = await bcrypt.hash(
-            selected.ipaddr.concat(selected.macaddr).concat(selected.phonenum),
+            selected.ipaddr.concat(selected.sessionId).concat(selected.phonenum),
             salt
           ); // hashing for token
           const updateDoc = {
@@ -140,7 +140,7 @@ module.exports = class API {
             if (r.acknowledged) {
               let result = {
                 ipaddr: selected.ipaddr,
-                macaddr: selected.macaddr,
+                sessionId: selected.sessionId,
                 phonenum: selected.phonenum,
                 token: token,
                 inTime: selected.inTime.toISOString(),
@@ -176,7 +176,7 @@ module.exports = class API {
           const options = { upsert: false };
           const salt = await bcrypt.genSalt(10);
           const token = await bcrypt.hash(
-            selected.ipaddr.concat(selected.macaddr).concat(selected.phonenum),
+            selected.ipaddr.concat(selected.sessionId).concat(selected.phonenum),
             salt
           ); // hashing for token
           const updateDoc = {
@@ -186,7 +186,7 @@ module.exports = class API {
             if (r.acknowledged) {
               let result = {
                 ipaddr: selected.ipaddr,
-                macaddr: selected.macaddr,
+                sessionId: selected.sessionId,
                 phonenum: selected.phonenum,
                 token: token,
                 inTime: selected.inTime.toISOString(),
@@ -234,7 +234,7 @@ module.exports = class API {
     console.log("enqueue/dequeue aborted, replacing with nulls");
     return {
       ipaddr: null,
-      macaddr: null,
+      sessionId: null,
       phonenum: null,
       inTime: null,
       outTime: null,
