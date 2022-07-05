@@ -1,9 +1,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  labels:
+    app: envoy
   name: envoy
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: envoy
@@ -24,6 +26,11 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /etc/envoy
+          resources:
+            requests:
+              cpu: 25m
+            limits:
+              cpu: 50m
       volumes:
         - name: config
           configMap:

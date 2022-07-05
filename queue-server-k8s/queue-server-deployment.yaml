@@ -5,7 +5,7 @@ metadata:
     app: queue-server
   name: queue-server
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: queue-server
@@ -21,7 +21,7 @@ spec:
         - image: yxchia98/queue-server
           name: queue-server
           ports:
-          - containerPort: 50051
+            - containerPort: 50051
           env:
             # - name: ADMINUSERNAME
             #   valueFrom:
@@ -55,6 +55,6 @@ spec:
                   key: queueserver_proto_path
           resources:
             requests:
-              cpu: 50m
+              cpu: 25m
             limits:
-              cpu: 100m
+              cpu: 50m
