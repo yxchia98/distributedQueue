@@ -1,6 +1,5 @@
 # distributedQueue
 
-
 Start / Stop Minikube:
 
 ```
@@ -13,6 +12,7 @@ Start Minikube Kubernetes Dashboard (open a new terminal):
 ```
 minikube addons enable metrics-server
 minikube addons enable dashboard
+minikube addons enable ingress
 minikube dashboard
 # if not using Minikube
 kubectl apply -k ./dashboard
@@ -28,13 +28,17 @@ kubectl apply -k ./envoy-k8s
 ```
 
 Install Linkerd Control Plane:
+
 ```
 choco install linkerd2
 ```
+
 ```
 brew install linkerd
 ```
+
 Install Linkerd Dashboard:
+
 ```
 linkerd install --set proxyInit.runAsRoot=true | kubectl apply -f -
 linkerd viz install | kubectl apply -f -
@@ -48,6 +52,7 @@ linkerd viz dashboard
 ```
 
 Starting Frontend App:
+
 ```
 cd frontend
 npm install

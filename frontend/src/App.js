@@ -12,7 +12,7 @@ const {
   WaitQueueReply,
 } = require("./waitingroom_pb.js");
 
-let client = new WaitingRoomClient("http://172.18.240.76:32010", null, null);
+let client = new WaitingRoomClient("http://172.20.251.92:80/", null, null);
 
 function App() {
   const captchaRef = useRef(null);
@@ -92,8 +92,30 @@ function App() {
     }
   };
 
+  const stressCalls = async () => {
+    let client = new WaitingRoomClient("http://172.20.251.92:80/", null, null);
+    for (let i = 0; i < 10000; i++) {
+      const request = new WaitQueueRequest();
+
+      request.setIpaddr("testip");
+      request.setSessionid("testSessId");
+      request.setPhonenum("testNum");
+      client.enqueueCustomer(request, {}, async (err, response) => {
+        if (response == null) {
+          console.log(err);
+        } else {
+          let responseMessage = response.getStatus();
+          console.log(responseMessage);
+        }
+      });
+      await sleep(1);
+    }
+  };
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
   return (
     <div className="App">
+      <button onClick={stressCalls}>Activate Lasers</button>
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <form onSubmit={startQueue}>

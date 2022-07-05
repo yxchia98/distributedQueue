@@ -12,7 +12,7 @@ var packageDefinition = protoLoader.loadSync(PROTO_PATH, {
 });
 var waitingroom_proto =
   grpc.loadPackageDefinition(packageDefinition).waitingroom;
-var target = "172.18.240.76:32003";
+var target = "172.20.251.92:32003";
 // var target = "localhost:50051";
 
 const ipaddr = "127.0.0.3";
@@ -105,21 +105,24 @@ const subscribeNotification = async () => {
     target,
     grpc.credentials.createInsecure()
   );
-  let call = client.waitQueue({ ipaddr: ipaddr, sessionId: sessionId, phonenum: phonenum });
-  call.on('data', function(response){
-    console.log(response.selected)
-    if(response.selected){
-      console.log(response)
-      console.log('Selected! Redirecting...')
-    }
-    else{
-      console.log('Still in queue...')
+  let call = client.waitQueue({
+    ipaddr: ipaddr,
+    sessionId: sessionId,
+    phonenum: phonenum,
+  });
+  call.on("data", function (response) {
+    console.log(response.selected);
+    if (response.selected) {
+      console.log(response);
+      console.log("Selected! Redirecting...");
+    } else {
+      console.log("Still in queue...");
     }
   });
-  call.on('end', function(){
-    console.log('stream closed!')
-  })
-}
+  call.on("end", function () {
+    console.log("stream closed!");
+  });
+};
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
