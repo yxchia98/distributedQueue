@@ -8,9 +8,9 @@ app = Flask(__name__)
 tokenlist = []
 
 
-@app.route("/")
-def home():
-    return render_template("main.html"), {"Refresh": "3; redirect"}
+# @app.route("/")
+# def home():
+#     return render_template("main.html"), {"Refresh": "3; redirect"}
 
 
 # GET token and save in list
@@ -19,10 +19,8 @@ def gettoken():
     # if key doesn't exist, returns None
     token = request.args.get("token")
     tokenlist.append(token)
-    return """
-              <h1>The token is: {}</h1>""".format(
-        token
-    )
+    return render_template("main.html"), {"Refresh": "3; redirect"}
+    
 
 
 # send token for validation
