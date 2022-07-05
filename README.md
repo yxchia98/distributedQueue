@@ -24,6 +24,7 @@ Deploying Distributed Queue Kubernetes Cluster:
 kubectl apply -k ./mongo-k8s
 kubectl apply -k ./mongo-express-k8s
 kubectl apply -k ./queue-server-k8s
+kubectl apply -k ./envoy-k8s
 ```
 
 Install Linkerd Control Plane:
@@ -46,6 +47,13 @@ kubectl get deploy -o yaml | linkerd inject - | kubectl apply -f -
 linkerd viz dashboard
 ```
 
+Starting Frontend App:
+```
+cd frontend
+npm install
+npm start
+```
+
 Uninstall Linkerd:
 
 ```
@@ -59,6 +67,7 @@ Tearing down cluster:
 kubectl delete -k ./mongo-k8s
 kubectl delete -k ./mongo-express-k8s
 kubectl delete -k ./queue-server-k8s
+kubectl delete -k ./envoy-k8s
 ```
 
 Deploy Kubernetes Dashboard without Minikube (http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/):
