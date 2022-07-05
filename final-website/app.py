@@ -20,7 +20,6 @@ def gettoken():
     token = request.args.get("token")
     tokenlist.append(token)
     return render_template("main.html"), {"Refresh": "3; redirect"}
-    
 
 
 # send token for validation
@@ -47,7 +46,7 @@ def validate():
 # deicde which site to redirect to
 @app.route("/redirect")
 def options():
-    if result == "True":
+    if result == "true":
         return redirect("/option1")
     else:
         return redirect("/option2")

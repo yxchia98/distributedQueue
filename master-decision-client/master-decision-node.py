@@ -68,7 +68,7 @@ async def health_check():
 async def function_1():
     while True:
         await asyncio.sleep(5)
-        print("HELLO WORLD from func 1")
+        print("async background func")
 
 
 async def main():
