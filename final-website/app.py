@@ -44,7 +44,6 @@ def options():
     if result == "True":
         return redirect("/option1")
     else:
-        print("hi2")
         return redirect("/option2")
    
 @app.route('/option1')
