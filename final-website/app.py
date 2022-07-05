@@ -32,9 +32,9 @@ def starting_url():
     data = []
     data.append(tokenlist)
     data.append(capacity)
+    tokenlist.clear()
     return jsonify(data)
 
-tokenlist.clear()
 
 # validate token
 @app.route("/validatetoken", methods=["POST"])
@@ -51,17 +51,18 @@ def validate():
 
 
 # deicde which site to redirect to
-@app.route("/redirect")
-def options():
-    if result == "true":
-        return redirect("/option1")
-    else:
-        return redirect("/option2")
+# todo make changes on redirection with specific user
+# @app.route("/redirect")
+# def options():
+#     if result == "true":
+#         return redirect("/option1")
+#     else:
+#         return redirect("/option2")
 
 
 @app.route("/option1")
 def option1():
-    return render_template("success.html",token=max_cap)
+    return render_template("success.html",token=max)
 
 
 @app.route("/option2")
@@ -69,8 +70,8 @@ def option2():
     return render_template("index.html")
 
 def checkout_user():
-    #random = random.randint(0,4)
-    selected_user.pop(0) if selected_user else None
+    random = random.randint(0,4)
+    selected_user.pop(random) if selected_user else None
 
 
 sched = BackgroundScheduler(daemon=True)
