@@ -16,7 +16,7 @@ service Validator{
 
 message EnqueueCustomerRequest{
     string ipaddr = 1;
-    string macaddr = 2;
+    string sessionId = 2;
     string phonenum = 3;
 }
 
@@ -26,13 +26,13 @@ message EnqueueCustomerReply{
 
 message WaitQueueRequest{
   string ipaddr = 1;
-  string macaddr = 2;
+  string sessionId = 2;
   string phonenum = 3;
 }
 
 message WaitQueueReply{
   string ipaddr = 1;
-  string macaddr = 2;
+  string sessionId = 2;
   string phonenum = 3;
   string token = 4;
   string url = 5;
@@ -44,7 +44,7 @@ message DequeueCustomerRequest{
 
 message DequeueCustomerReply{
   string ipaddr = 1;
-  string macaddr = 2;
+  string sessionId = 2;
   string phonenum = 3;
   string inTime = 4;
   string outTime = 5;
@@ -55,5 +55,6 @@ message ValidateTokenRequest{
 }
 
 message ValidateTokenReply{
-  string validated = 1;
+  string token = 1;
+  string validated = 2;
 }
