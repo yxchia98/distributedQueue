@@ -10,8 +10,8 @@ minikube stop
 Start Minikube Kubernetes Dashboard (open a new terminal):
 
 ```
-minikube enable addons dashboard
-minikube enable addons metrics-server
+minikube addons enable metrics-server
+minikube addons enable dashboard
 minikube dashboard
 # if not using Minikube
 kubectl apply -k ./dashboard
