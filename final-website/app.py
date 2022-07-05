@@ -27,6 +27,7 @@ def starting_url():
 def validate():
     request_data = request.get_json()
     token = request_data['token']
+    global result
     result = request_data['result']
     for elem in list(tokenlist):
         if tokenlist[elem] == token:
@@ -40,9 +41,7 @@ def validate():
 #deicde which site to redirect to
 @app.route('/redirect')
 def options():
-    option = random.randint(0,10)
-    if option%2==0:
-        print("hi1") 
+    if result == "True":
         return redirect("/option1")
     else:
         print("hi2")
