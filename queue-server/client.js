@@ -14,6 +14,11 @@ var waitingroom_proto =
   grpc.loadPackageDefinition(packageDefinition).waitingroom;
 var target = "172.18.240.76:32003";
 // var target = "localhost:50051";
+
+const ipaddr = "127.0.0.3";
+const macaddr = "2C:54:91:88:C9:E3";
+const phonenum = "92837123";
+
 function main() {
   var client = new waitingroom_proto.Greeter(
     target,
@@ -35,9 +40,6 @@ const queueCustomer = () => {
     target,
     grpc.credentials.createInsecure()
   );
-  let ipaddr = "127.0.0.2";
-  let macaddr = "AD:GS:VD:6E:1D:A2";
-  let phonenum = "92837122";
   client.enqueueCustomer(
     { ipaddr: ipaddr, macaddr: macaddr, phonenum: phonenum },
     function (err, response) {
@@ -98,11 +100,32 @@ const randomDequeues = async (num) => {
   }
 };
 
+const subscribeNotification = async () => {
+  var client = new waitingroom_proto.WaitingRoom(
+    target,
+    grpc.credentials.createInsecure()
+  );
+  let call = client.waitQueue({ ipaddr: ipaddr, macaddr: macaddr, phonenum: phonenum });
+  call.on('data', function(response){
+    console.log(response.selected)
+    if(response.selected){
+      console.log('Selected! Redirecting...')
+    }
+    else{
+      console.log('Still in queue...')
+    }
+  });
+  call.on('end', function(){
+    console.log('stream closed!')
+  })
+}
+
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-randomQueues(500);
-randomDequeues(500);
+// randomQueues(500);
+// randomDequeues(500);
 // dequeueRandom();
-// dequeueFirst();
+dequeueFirst();
 // queueCustomer();
+// subscribeNotification()
 // main();

@@ -20,6 +20,8 @@ spec:
       containers:
         - image: yxchia98/queue-server
           name: queue-server
+          ports:
+          - containerPort: 50051
           env:
             # - name: ADMINUSERNAME
             #   valueFrom:

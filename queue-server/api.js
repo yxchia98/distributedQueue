@@ -67,10 +67,10 @@ module.exports = class API {
 
   waitQueue = async (call, callback) => {
     console.log(
-      `streaming for queue status for ${call.request.ipaddr}, ${call.request.macaddr}, ${call.request.phoenum}`
+      `streaming for queue status for ${call.request.ipaddr}, ${call.request.macaddr}, ${call.request.phonenum}`
     );
     const queue = this.db.collection("queues");
-    checking = true;
+    let checking = true;
     while (checking) {
       const query = {
         ipaddr: call.request.ipaddr,
@@ -100,13 +100,13 @@ module.exports = class API {
               url: process.env.ENDPOINT_URL,
               selected: true,
             };
-            call.write(res);
-            if (res.selected) {
-              console.log(
-                `selected ${call.request.ipaddr}, ${call.request.macaddr}, ${call.request.phoenum}, streaming back and closing...`
-              );
-              call.end();
-            }
+          }
+          call.write(res);
+          if (res.selected) {
+            console.log(
+              `selected ${call.request.ipaddr}, ${call.request.macaddr}, ${call.request.phoenum}, streaming back and closing...`
+            );
+            call.end();
           }
         });
       await sleep(5000);
