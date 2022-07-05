@@ -17,8 +17,9 @@ let client = new WaitingRoomClient("http://172.18.240.76:32010", null, null);
 function App() {
   const captchaRef = useRef(null);
   const isInitialMount = useRef(true);
-  const [phoneNum, setPhoneNum] = useState(null);
   const [ip, setIP] = useState(null);
+  const [sessionId, setSessionId] = useState(null);
+  const [phoneNum, setPhoneNum] = useState(null);
 
   const getData = async () => {
     const res = await axios.get("https://geolocation-db.com/json/");
@@ -41,39 +42,18 @@ function App() {
             parseInt(ip.replaceAll(".", "")) +
             Math.random().toString(16).slice(2);
           window.sessionStorage.setItem("queueFingerprint", id);
+          setSessionId(id);
         }
       }
     }
   }, [ip]);
 
-  let startQueue = (e) => {
-    e.preventDefault();
-    const response = captchaRef.current.getValue();
-
-    if (response.length == 0) {
-      console.log("Not checked");
-    } else {
-      const request = new EnqueueCustomerRequest();
-      request.setIpaddr("Test");
-      request.setSessionid("Test");
-      request.setPhonenum("Test");
-
-      client.enqueueCustomer(request, {}, (err, response) => {
-        if (response == null) {
-          console.log(err);
-        } else {
-          console.log(response.getStatus());
-        }
-      });
-    }
-  };
-
   let startGrpcStream = () => {
     const request = new WaitQueueRequest();
 
-    request.setIpaddr("Test");
-    request.setSessionid("Test");
-    request.setPhonenum("Test");
+    request.setIpaddr(ip);
+    request.setSessionid(sessionId);
+    request.setPhonenum(phoneNum);
 
     let stream = client.waitQueue(request);
 
@@ -85,12 +65,39 @@ function App() {
     });
   };
 
+  let startQueue = (e) => {
+    e.preventDefault();
+    const response = captchaRef.current.getValue();
+
+    if (response.length == 0) {
+      console.log("Not checked");
+    } else {
+      const request = new EnqueueCustomerRequest();
+      request.setIpaddr(ip);
+      request.setSessionid(sessionId);
+      request.setPhonenum(e.target[0].value);
+
+      setPhoneNum(e.target[0].value);
+
+      client.enqueueCustomer(request, {}, (err, response) => {
+        if (response == null) {
+          console.log(err);
+        } else {
+          let responseMessage = response.getStatus();
+          if (responseMessage === "added to queue") {
+            startGrpcStream();
+          }
+        }
+      });
+    }
+  };
+
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <form onSubmit={startQueue}>
-          <label htmlFor="phoneNum">Phone Number</label>
+          <label htmlFor="phoneNum">Phone Number: </label>
           <input type="text" id="phoneNum" className="input" />
           <ReCAPTCHA
             sitekey="6Ld-ecUgAAAAAKttkbASYR7ll4n--Q5-dNe2_ZUt"
@@ -98,17 +105,6 @@ function App() {
           />
           <button>Submit</button>
         </form>
-        <button style={{ padding: 10 }} onClick={startGrpcStream}>
-          Click for grpc stream
-        </button>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
       </header>
     </div>
   );
