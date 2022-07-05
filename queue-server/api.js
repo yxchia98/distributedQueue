@@ -207,10 +207,11 @@ module.exports = class API {
     const queue = this.db.collection("queues");
     query = {
       inqueue: false,
-      ipaddr: call.request.ipaddr,
-      macaddr: call.request.macaddr,
-      phonenum: call.request.phonenum,
       token: call.request.token,
+    };
+    let res = {
+      token: call.request.token,
+      validated: false,
     };
     queue
       .find(query)
@@ -218,12 +219,10 @@ module.exports = class API {
       .then((results) => {
         if (results.length == 0) {
           console.log("token is invalid!");
-          let res = {
-            validated: false,
-          };
           callback(null, res);
         } else {
-          let res = {
+          res = {
+            token: call.request.token,
             validated: true,
           };
           callback(null, res);
