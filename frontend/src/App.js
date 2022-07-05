@@ -7,12 +7,29 @@ const {
   EnqueueCustomerRequest,
   EnqueueCustomerReply,
   WaitQueueRequest,
-  WaitQueue,
+  WaitQueueReply,
 } = require("./waitingroom_pb.js");
 
-let client = new WaitingRoomClient("http://localhost:56865", null, null);
+let client = new WaitingRoomClient("http://localhost:49334", null, null);
 
 function App() {
+  let startGrpcStream = () => {
+    const request = new WaitQueueRequest();
+
+    request.setIpaddr("Test");
+    request.setMacaddr("Test");
+    request.setPhonenum("Test");
+
+    let stream = client.waitQueue(request);
+
+    stream.on("data", function (res) {
+      let status = res.getSelected();
+      if (status == true) {
+        window.location.assign("http://" + res.getUrl());
+      }
+    });
+  };
+
   let callGrpcService = () => {
     const request = new EnqueueCustomerRequest();
     request.setIpaddr("Test");
@@ -23,7 +40,7 @@ function App() {
       if (response == null) {
         console.log(err);
       } else {
-        console.log(response);
+        console.log(response.getStatus());
       }
     });
   };
@@ -35,7 +52,9 @@ function App() {
         <button style={{ padding: 10 }} onClick={callGrpcService}>
           Click for grpc request
         </button>
-
+        <button style={{ padding: 10 }} onClick={startGrpcStream}>
+          Click for grpc stream
+        </button>
         <a
           className="App-link"
           href="https://reactjs.org"
