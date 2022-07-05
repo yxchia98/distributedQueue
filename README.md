@@ -1,5 +1,6 @@
 # distributedQueue
 
+
 Start / Stop Minikube:
 
 ```
@@ -23,6 +24,19 @@ Deploying Distributed Queue Kubernetes Cluster:
 kubectl apply -k ./mongo-k8s
 kubectl apply -k ./mongo-express-k8s
 kubectl apply -k ./queue-server-k8s
+```
+
+Install Linkerd Control Plane:
+```
+choco install linkerd2
+```
+```
+brew install linkerd
+```
+Install Linkerd Dashboard:
+```
+linkerd install --set proxyInit.runAsRoot=true | kubectl apply -f -
+linkerd viz install | kubectl apply -f -
 ```
 
 Inject Linkerd to all applications:
