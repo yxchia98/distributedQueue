@@ -125,8 +125,8 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // randomQueues(500);
 // randomDequeues(500);
-dequeueRandom();
-// dequeueFirst();
+// dequeueRandom();
+dequeueFirst();
 // queueCustomer();
 // subscribeNotification()
 // main();

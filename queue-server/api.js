@@ -205,7 +205,7 @@ module.exports = class API {
   validateToken = (call, callback) => {
     console.log("validating token");
     const queue = this.db.collection("queues");
-    query = {
+    let query = {
       inqueue: false,
       token: call.request.token,
     };
