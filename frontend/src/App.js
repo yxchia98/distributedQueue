@@ -1,7 +1,8 @@
 import logo from "./logo.svg";
 import "./App.css";
 import ReCAPTCHA from "react-google-recaptcha";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
+import axios from "axios";
 
 const { WaitingRoomClient } = require("./waitingroom_grpc_web_pb.js");
 const {
@@ -15,7 +16,35 @@ let client = new WaitingRoomClient("http://localhost:49334", null, null);
 
 function App() {
   const captchaRef = useRef(null);
+  const isInitialMount = useRef(true);
   const [phoneNum, setPhoneNum] = useState(null);
+  const [ip, setIP] = useState(null);
+
+  const getData = async () => {
+    const res = await axios.get("https://geolocation-db.com/json/");
+    setIP(res.data.IPv4);
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+    } else {
+      let storedSessionId = window.sessionStorage.getItem("queueFingerprint");
+
+      if (storedSessionId === null) {
+        if (ip != null) {
+          const id =
+            parseInt(ip.replaceAll(".", "")) +
+            Math.random().toString(16).slice(2);
+          window.sessionStorage.setItem("queueFingerprint", id);
+        }
+      }
+    }
+  }, [ip]);
 
   let startQueue = (e) => {
     e.preventDefault();
