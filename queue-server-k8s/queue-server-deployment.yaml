@@ -13,10 +13,15 @@ spec:
     metadata:
       labels:
         app: queue-server
+      annotations:
+        linkerd.io/inject: enabled
+        config.linkerd.io/proxy-cpu-request: "0.1"
     spec:
       containers:
         - image: yxchia98/queue-server
           name: queue-server
+          ports:
+          - containerPort: 50051
           env:
             # - name: ADMINUSERNAME
             #   valueFrom:

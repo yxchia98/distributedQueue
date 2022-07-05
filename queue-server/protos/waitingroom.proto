@@ -55,5 +55,6 @@ message ValidateTokenRequest{
 }
 
 message ValidateTokenReply{
-  string validated = 1;
+  string token = 1;
+  string validated = 2;
 }
