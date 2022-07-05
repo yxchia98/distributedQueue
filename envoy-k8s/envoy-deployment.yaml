@@ -11,6 +11,9 @@ spec:
     metadata:
       labels:
         app: envoy
+      annotations:
+        linkerd.io/inject: enabled
+        config.linkerd.io/proxy-cpu-request: "0.1"
     spec:
       containers:
         - name: envoy
