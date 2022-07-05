@@ -16,7 +16,7 @@ var target = "172.18.240.76:32003";
 // var target = "localhost:50051";
 
 const ipaddr = "127.0.0.3";
-const macaddr = "2C:54:91:88:C9:E3";
+const sessionId = "2C:54:91:88:C9:E3";
 const phonenum = "92837123";
 
 function main() {
@@ -41,7 +41,7 @@ const queueCustomer = () => {
     grpc.credentials.createInsecure()
   );
   client.enqueueCustomer(
-    { ipaddr: ipaddr, macaddr: macaddr, phonenum: phonenum },
+    { ipaddr: ipaddr, sessionId: sessionId, phonenum: phonenum },
     function (err, response) {
       console.log(response);
     }
@@ -88,10 +88,10 @@ const randomDequeues = async (num) => {
       grpc.credentials.createInsecure()
     );
     let ipaddr = i.toString();
-    let macaddr = i.toString();
+    let sessionId = i.toString();
     let phonenum = i.toString();
     client.enqueueCustomer(
-      { ipaddr: ipaddr, macaddr: macaddr, phonenum: phonenum },
+      { ipaddr: ipaddr, sessionId: sessionId, phonenum: phonenum },
       async function (err, response) {
         console.log(response);
       }
@@ -105,7 +105,7 @@ const subscribeNotification = async () => {
     target,
     grpc.credentials.createInsecure()
   );
-  let call = client.waitQueue({ ipaddr: ipaddr, macaddr: macaddr, phonenum: phonenum });
+  let call = client.waitQueue({ ipaddr: ipaddr, sessionId: sessionId, phonenum: phonenum });
   call.on('data', function(response){
     console.log(response.selected)
     if(response.selected){

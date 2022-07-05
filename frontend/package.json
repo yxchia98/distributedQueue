@@ -17,7 +17,11 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+<<<<<<< HEAD
     "start": "react-scripts start",
+=======
+    "start": "set HTTPS=false&&react-scripts start",
+>>>>>>> 582a8cd0c3926fb9b25f1f26570d059b5436427a
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

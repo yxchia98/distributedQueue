@@ -12,7 +12,7 @@ const {
   WaitQueueReply,
 } = require("./waitingroom_pb.js");
 
-let client = new WaitingRoomClient("http://localhost:49334", null, null);
+let client = new WaitingRoomClient("http://172.18.240.76:32010", null, null);
 
 function App() {
   const captchaRef = useRef(null);
