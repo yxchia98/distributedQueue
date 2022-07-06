@@ -12,7 +12,9 @@ const {
   WaitQueueReply,
 } = require("./waitingroom_pb.js");
 
-let client = new WaitingRoomClient("http://172.20.251.92:80/", null, null);
+const envoyIP = "http://127.0.0.1:50301";
+
+let client = new WaitingRoomClient(envoyIP, null, null);
 
 function App() {
   const captchaRef = useRef(null);
@@ -77,13 +79,12 @@ function App() {
       request.setSessionid(sessionId);
       request.setPhonenum(e.target[0].value);
 
-      setPhoneNum(e.target[0].value);
-
       client.enqueueCustomer(request, {}, (err, response) => {
         if (response == null) {
           console.log(err);
         } else {
           let responseMessage = response.getStatus();
+          console.log(responseMessage);
           if (responseMessage === "added to queue") {
             startGrpcStream();
           }
@@ -92,8 +93,13 @@ function App() {
     }
   };
 
+  const onChangeHandler = (event) => {
+    setPhoneNum(event.target.value);
+    console.log(phoneNum);
+  };
+
   const stressCalls = async () => {
-    let client = new WaitingRoomClient("http://172.20.251.92:80/", null, null);
+    let client = new WaitingRoomClient(envoyIP, null, null);
     for (let i = 0; i < 10000; i++) {
       const request = new WaitQueueRequest();
 
@@ -120,7 +126,12 @@ function App() {
         <img src={logo} className="App-logo" alt="logo" />
         <form onSubmit={startQueue}>
           <label htmlFor="phoneNum">Phone Number: </label>
-          <input type="text" id="phoneNum" className="input" />
+          <input
+            type="text"
+            id="phoneNum"
+            className="input"
+            onChange={onChangeHandler}
+          />
           <ReCAPTCHA
             sitekey="6Ld-ecUgAAAAAKttkbASYR7ll4n--Q5-dNe2_ZUt"
             ref={captchaRef}
