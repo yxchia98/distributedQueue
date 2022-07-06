@@ -7,7 +7,7 @@ app = Flask(__name__)
 tokenlist1=['3','32','apple','1']
 tokenlist =[]
 selected_user=['apple', 'banana', 'cherry','1', '5', '7', '9', '3']
-max_cap =5
+max_cap = 10
 approved=[]
 invalid=[]
 
@@ -38,6 +38,8 @@ def starting_url():
     data = []
     data.append(tokenlist)
     data.append(capacity)
+    current_no = max_cap-len(selected_user)
+    data.append(current_no)
     # tokenlist1 =tokenlist
     tokenlist.clear()
     return jsonify(data)
