@@ -55,6 +55,6 @@ spec:
                   key: queueserver_proto_path
           resources:
             requests:
-              cpu: 10m
+              cpu: 5m
             limits:
-              cpu: 20m
+              cpu: 50m

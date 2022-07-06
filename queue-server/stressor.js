@@ -12,7 +12,7 @@ var packageDefinition = protoLoader.loadSync(PROTO_PATH, {
 });
 var waitingroom_proto =
   grpc.loadPackageDefinition(packageDefinition).waitingroom;
-var target = "172.20.240.118:32003";
+var target = "172.20.242.97:32003";
 // var target = "localhost:50051";
 
 const ipaddr = "127.0.0.3";

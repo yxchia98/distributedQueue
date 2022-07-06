@@ -12,7 +12,7 @@ const {
   WaitQueueReply,
 } = require("./waitingroom_pb.js");
 
-const envoyIP = "http://172.20.252.25:80/";
+const envoyIP = "http://172.20.242.97:80/";
 
 let client = new WaitingRoomClient(envoyIP, null, null);
 
@@ -102,19 +102,20 @@ function App() {
     let client = new WaitingRoomClient(envoyIP, null, null);
     for (let i = 0; i < 10000; i++) {
       const request = new EnqueueCustomerRequest();
-
-      request.setIpaddr(i.toString());
-      request.setSessionid(i.toString());
-      request.setPhonenum(i.toString());
+      let val = i.toString();
+      request.setIpaddr(val);
+      request.setSessionid(val);
+      request.setPhonenum(val);
       client.enqueueCustomer(request, {}, async (err, response) => {
+        console.log("sent!");
         if (response == null) {
           console.log(err);
         } else {
           let responseMessage = response.getStatus();
-          console.log(responseMessage);
+          // console.log(responseMessage);
         }
       });
-      await sleep(1);
+      // await sleep(100);
     }
   };
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));

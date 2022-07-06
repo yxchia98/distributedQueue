@@ -30,7 +30,7 @@ spec:
             requests:
               cpu: 5m
             limits:
-              cpu: 10m
+              cpu: 50m
       volumes:
         - name: config
           configMap:
