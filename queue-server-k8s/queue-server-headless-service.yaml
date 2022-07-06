@@ -9,5 +9,5 @@ spec:
     app: queue-server
   ports:
     - protocol: TCP
-      port: 12345
-      targetPort: 12345
+      port: 5051
+      targetPort: 5051

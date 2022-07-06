@@ -77,7 +77,7 @@ const randomQueues = async (num) => {
     client.dequeueRandomCustomer({}, async function (err, response) {
       console.log(response);
     });
-    await sleep(500);
+    await sleep(100);
   }
 };
 
@@ -96,7 +96,7 @@ const randomDequeues = async (num) => {
         console.log(response);
       }
     );
-    await sleep(500);
+    await sleep(100);
   }
 };
 
@@ -126,10 +126,10 @@ const subscribeNotification = async () => {
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-// randomQueues(500);
-// randomDequeues(500);
+randomQueues(500);
+randomDequeues(500);
 // dequeueRandom();
-dequeueFirst();
+// dequeueFirst();
 // queueCustomer();
 // subscribeNotification()
 // main();

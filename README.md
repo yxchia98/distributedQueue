@@ -7,24 +7,21 @@ minikube start --extra-config=kubelet.housekeeping-interval=10s
 minikube stop
 ```
 
-Start Minikube Kubernetes Dashboard (open a new terminal):
+Install Required Minikube Addons:
 
 ```
 minikube addons enable metrics-server
 minikube addons enable dashboard
 minikube addons enable ingress
+
+```
+
+Start Minikube Kubernetes Dashboard (open a new terminal):
+
+```
 minikube dashboard
 # if not using Minikube
 kubectl apply -k ./dashboard
-```
-
-Deploying Distributed Queue Kubernetes Cluster:
-
-```
-kubectl apply -k ./mongo-k8s
-kubectl apply -k ./mongo-express-k8s
-kubectl apply -k ./queue-server-k8s
-kubectl apply -k ./envoy-k8s
 ```
 
 Install Linkerd Control Plane:
@@ -37,17 +34,25 @@ choco install linkerd2
 brew install linkerd
 ```
 
-Install Linkerd Dashboard:
+Install Linkerd Service Mesh
 
 ```
 linkerd install --set proxyInit.runAsRoot=true | kubectl apply -f -
 linkerd viz install | kubectl apply -f -
 ```
 
-Inject Linkerd to all applications:
+Deploying Distributed Queue Kubernetes Cluster:
 
 ```
-kubectl get deploy -o yaml | linkerd inject - | kubectl apply -f -
+kubectl apply -k ./mongo-k8s
+kubectl apply -k ./mongo-express-k8s
+kubectl apply -k ./queue-server-k8s
+kubectl apply -k ./envoy-k8s
+```
+
+Start Linkerd Dashboard (open a new terminal):
+
+```
 linkerd viz dashboard
 ```
 
