@@ -1,33 +1,31 @@
 from flask import Flask, render_template, url_for, redirect, request, jsonify
 import random
-import time
-import json
 from apscheduler.schedulers.background import BackgroundScheduler
 
 app = Flask(__name__)
 
-tokenlist=[3,32,6,1]
-tokenlist1 =[]
-selected_user=[ 1, 6, 3, 5, 3, 4 ]
+tokenlist1=['3','32','apple','1']
+tokenlist =[]
+selected_user=['apple', 'banana', 'cherry','1', '5', '7', '9', '3']
 max_cap =5
 approved=[]
 invalid=[]
-randomnum = random.randint(0,4)
+
 # @app.route("/")
 # def home():
 #     return render_template("main.html"), {"Refresh": "3; redirect"}
-@app.route("/success/<int:score>")
-def option1():
+
+@app.route("/success/")
+def success():
     return render_template("success.html",)
 
-@app.route("/invalid/<int:score>")
-def option2():
+@app.route("/fail/")
+def fail():
     return render_template("invalid.html")
 
 # GET token and save in list
 @app.route("/gettoken")
 def gettoken():
-    # if key doesn't exist, returns None
     token = request.args.get("token")
     tokenlist.append(token)
     return render_template("main.html"), {"Refresh": "3; redirect"}
@@ -45,44 +43,49 @@ def starting_url():
     return jsonify(data)
 
 
-# validate token
+# retrieve validated data
 @app.route("/validatetoken", methods=["POST"])
 def validate():
     #retrieving data from brandon, commented because i m using dummy data
     # request_data = json.loads(request.get_json())
     # print(request_data)
-    # token = request_data["token"]
+    # token = str(request_data["token"])
     # tokenlist.append(token)
     # global result
-    # result = request_data["result"]
-    # selected_user = request_data["choosen"]
-    for x in range(len(tokenlist)):
-        # time.sleep(1)
+    # result = str(request_data["result"])
+    # choosen= str(request_data["choosen"])
+    # selected_user.append(choosen)
+    return jsonify("received data")
+
+#validate and splitdata and redirection decision
+@app.route('/redirect/<token>')
+def results(token):
+    for x in range(len(tokenlist1)):
         if tokenlist1[x] in selected_user:
             print("token "+ str(tokenlist1[x])+" valid")
             approved.append(tokenlist1[x])
+            print(approved)
         else:
             print("token "+str(tokenlist1[x])+" invalid")
             invalid.append(tokenlist1[x])
-    return jsonify(approved)
+    print(approved)
+    print(token)
+    result=""
+    if token in approved:
+        result='success'
+    else:
+        result='fail'
+    return redirect(url_for(result))
 
-# still testing dis part
-# @app.route('/redirect/<int:token>')
-# def results(token):
-#     result=""
-#     if token in approved:
-#         result='success'
-#     else:
-#         result='fail'
-#     return redirect(url_for(result,token=token))
+# randomly cheeck user out every 5 second
+def checkout_user():
+    randomnum = random.randint(0,max_cap-1)
+    selected_user.pop(randomnum) if selected_user else None
+    print(selected_user)
 
-# def checkout_user():
-#     selected_user.pop(randomnum) if selected_user else None
-
-
-# sched = BackgroundScheduler(daemon=True)
-# sched.add_job(options,'interval',seconds=3)
-# sched.start()
+sched = BackgroundScheduler(daemon=True)
+sched.add_job(checkout_user,'interval',seconds=5)
+sched.start()
 
 
 app.run(debug=True)
