@@ -28,9 +28,9 @@ spec:
               mountPath: /etc/envoy
           resources:
             requests:
-              cpu: 25m
+              cpu: 5m
             limits:
-              cpu: 50m
+              cpu: 10m
       volumes:
         - name: config
           configMap:

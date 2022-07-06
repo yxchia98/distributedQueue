@@ -12,7 +12,7 @@ var packageDefinition = protoLoader.loadSync(PROTO_PATH, {
 });
 var waitingroom_proto =
   grpc.loadPackageDefinition(packageDefinition).waitingroom;
-var target = "172.20.251.92:32003";
+var target = "172.20.240.118:32003";
 // var target = "localhost:50051";
 
 const ipaddr = "127.0.0.3";
@@ -126,9 +126,9 @@ const subscribeNotification = async () => {
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-randomQueues(500);
-randomDequeues(500);
-// dequeueRandom();
+// randomQueues(500);
+// randomDequeues(500);
+dequeueRandom();
 // dequeueFirst();
 // queueCustomer();
 // subscribeNotification()
