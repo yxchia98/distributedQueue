@@ -4,13 +4,14 @@ import grpc
 import requests
 import asyncio
 import json
+import os
 
 import waitingroom_pb2
 import waitingroom_pb2_grpc
 
 
-GRPC_SERVER_URL = "127.0.0.1:50051"
-FINAL_PAGE_SERVER_URL = "http://127.0.0.1:5000"
+GRPC_SERVER_URL = os.environ['GRPC_SERVER_URL']
+FINAL_PAGE_SERVER_URL = os.environ['FINAL_PAGE_SERVER_URL']
 
 
 async def run_parallel(*functions):

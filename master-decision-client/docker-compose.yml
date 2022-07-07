@@ -1,0 +1,14 @@
+version: "3.7"
+
+services:
+  master_decision_node:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: master_decision_node
+    restart: always
+    network_mode: host
+    environment:
+      GRPC_SERVER_URL: '192.168.1.232:50051'
+      FINAL_PAGE_SERVER_URL: 'http://192.168.1.232:5000'
+      
