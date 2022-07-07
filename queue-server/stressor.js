@@ -12,7 +12,7 @@ var packageDefinition = protoLoader.loadSync(PROTO_PATH, {
 });
 var waitingroom_proto =
   grpc.loadPackageDefinition(packageDefinition).waitingroom;
-var target = "172.20.251.92:32003";
+var target = "172.20.242.97:32003";
 // var target = "localhost:50051";
 
 const ipaddr = "127.0.0.3";
@@ -77,7 +77,7 @@ const randomQueues = async (num) => {
     client.dequeueRandomCustomer({}, async function (err, response) {
       console.log(response);
     });
-    await sleep(500);
+    await sleep(100);
   }
 };
 
@@ -96,7 +96,7 @@ const randomDequeues = async (num) => {
         console.log(response);
       }
     );
-    await sleep(500);
+    await sleep(100);
   }
 };
 
@@ -128,8 +128,8 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // randomQueues(500);
 // randomDequeues(500);
-// dequeueRandom();
-dequeueFirst();
+dequeueRandom();
+// dequeueFirst();
 // queueCustomer();
 // subscribeNotification()
 // main();
