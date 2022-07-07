@@ -1,6 +1,5 @@
 from datetime import datetime
 import logging
-import re
 import grpc
 import requests
 import asyncio
@@ -26,12 +25,18 @@ def validator(token):
         return response.validated
 
 
-def dequeue():
+def dequeue(type):
     with grpc.insecure_channel(GRPC_SERVER_URL) as channel:
         stub = waitingroom_pb2_grpc.DequeueStub(channel)
 
-        response = stub.DequeueRandomCustomer(waitingroom_pb2.DequeueCustomerRequest())
-        # response = stub.DequeueFirstCustomer(waitingroom_pb2.DequeueCustomerRequest())
+        if type == 0:
+            response = stub.DequeueFirstCustomer(
+                waitingroom_pb2.DequeueCustomerRequest()
+            )
+        else:
+            response = stub.DequeueRandomCustomer(
+                waitingroom_pb2.DequeueCustomerRequest()
+            )
         return {
             "ipaddr": response.ipaddr,
             "macaddr": response.macaddr,
@@ -48,18 +53,49 @@ async def health_check():
     # if there are available slots from final website:
     #   connect as grpc client to queue server to allow for dequeuing
     while True:
-        await asyncio.sleep(1)
+        await asyncio.sleep(2)
         try:
             req = requests.get(f"{FINAL_PAGE_SERVER_URL}/sendtoken")
             req_json = json.loads(req.text)
+            pending_unvalidated_tokens = req_json[0]
+            max_cap = int(req_json[1])
+            current_in_store = int(req_json[2])
+            dequeue_type = int(req_json[3])  # 0: first come first serve 1: random
             print(f"health check from final webpage: {req_json}")
-            for token in req_json:
+
+            can_process = []
+            to_requeue = []
+
+            for token in pending_unvalidated_tokens:
                 print(f"validating: {token}")
-                req_result = requests.post(
-                    f"{FINAL_PAGE_SERVER_URL}/validatetoken",
-                    json=json.dumps({"token": token, "result": validator(token)}),
-                )
-                print(req_result.text)
+                if validator(token):
+                    if len(can_process) <= max_cap - current_in_store:
+                        can_process.append(token)
+                        print(f"{token} can process")
+                    else:
+                        to_requeue.append(token)
+                        print(f"{token} needs to requeue")
+                else:
+                    print(f"{token} invalid token")
+
+            # send back
+            req_result = requests.post(
+                f"{FINAL_PAGE_SERVER_URL}/validatetoken",
+                json=json.dumps({"can_process": can_process, "to_requeue": to_requeue}),
+            )
+            print(f"reply from final web page: {req_result.text}")
+
+            print(can_process, to_requeue)
+
+            dequeue_count = (
+                max_cap - current_in_store - len(can_process) - len(to_requeue)
+            )
+
+            print(f"dequeuing total: {dequeue_count}")
+            # to send dequeue request to gRPC server
+            for q in range(dequeue_count):
+                print(f"dequeue #{q}")
+                dequeue(dequeue_type)
         except:
             print("error")
             pass
