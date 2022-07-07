@@ -53,11 +53,9 @@ def validate():
     #retrieving data from brandon, commented because i m using dummy data
     # request_data = json.loads(request.get_json())
     # print(request_data)
-    # token = str(request_data["token"])
+    # token = str(request_data["to_requeue"])
     # tokenlist.append(token)
-    # global result
-    # result = str(request_data["result"])
-    # choosen= str(request_data["choosen"])
+    # choosen= str(request_data["can_process"])
     # selected_user.append(choosen)
     return jsonify("received data")
 
