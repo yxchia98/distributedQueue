@@ -11,11 +11,7 @@ const {
   WaitQueueReply,
 } = require("./waitingroom_pb.js");
 
-<<<<<<< HEAD
 const envoyIP = "http://192.168.64.2:80";
-=======
-const envoyIP = "http://172.20.242.97:80/";
->>>>>>> a1d8b0bfebf28934d54ba4325c6506cbdc08dcca
 
 let client = new WaitingRoomClient(envoyIP, null, null);
 
