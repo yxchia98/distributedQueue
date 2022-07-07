@@ -1,4 +1,3 @@
-import logo from "./logo.svg";
 import "./App.css";
 import ReCAPTCHA from "react-google-recaptcha";
 import React, { useRef, useState, useEffect } from "react";
@@ -12,7 +11,7 @@ const {
   WaitQueueReply,
 } = require("./waitingroom_pb.js");
 
-const envoyIP = "http://172.20.242.97:80/";
+const envoyIP = "http://192.168.64.2:80";
 
 let client = new WaitingRoomClient(envoyIP, null, null);
 
@@ -22,6 +21,7 @@ function App() {
   const [ip, setIP] = useState(null);
   const [sessionId, setSessionId] = useState(null);
   const [phoneNum, setPhoneNum] = useState(null);
+  const [queuedUp, setQueuedUp] = useState(null);
 
   const getData = async () => {
     const res = await axios.get("https://geolocation-db.com/json/");
@@ -86,6 +86,7 @@ function App() {
           let responseMessage = response.getStatus();
           console.log(responseMessage);
           if (responseMessage === "added to queue") {
+            setQueuedUp(true);
             startGrpcStream();
           }
         }
@@ -122,23 +123,42 @@ function App() {
 
   return (
     <div className="App">
-      <button onClick={stressCalls}>Activate Lasers</button>
+      {/* <button onClick={stressCalls}>Activate Lasers</button> */}
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <form onSubmit={startQueue}>
-          <label htmlFor="phoneNum">Phone Number: </label>
-          <input
-            type="text"
-            id="phoneNum"
-            className="input"
-            onChange={onChangeHandler}
-          />
-          <ReCAPTCHA
-            sitekey="6Ld-ecUgAAAAAKttkbASYR7ll4n--Q5-dNe2_ZUt"
-            ref={captchaRef}
-          />
-          <button>Submit</button>
-        </form>
+        {!queuedUp ? (
+          <form onSubmit={startQueue}>
+            <label htmlFor="phoneNum">Phone Number: </label>
+            <input
+              type="text"
+              id="phoneNum"
+              className="input"
+              onChange={onChangeHandler}
+            />
+            <ReCAPTCHA
+              sitekey="6Ld-ecUgAAAAAKttkbASYR7ll4n--Q5-dNe2_ZUt"
+              ref={captchaRef}
+            />
+            <button>Submit</button>
+          </form>
+        ) : (
+          <div>
+            <div class="loader">
+              <svg class="circular-loader" viewBox="25 25 50 50">
+                <circle
+                  class="loader-path"
+                  cx="50"
+                  cy="50"
+                  r="20"
+                  fill="none"
+                  stroke="#70c542"
+                  stroke-width="2"
+                />
+              </svg>
+            </div>
+            <h1>You're in queue!</h1>
+            <h2>Please wait to be redirected.</h2>
+          </div>
+        )}
       </header>
     </div>
   );
