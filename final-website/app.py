@@ -10,6 +10,7 @@ selected_user=['apple', 'banana', 'cherry','1', '5', '7', '9', '3']
 max_cap = 10
 approved=[]
 invalid=[]
+dq_method=0
 
 # @app.route("/")
 # def home():
@@ -41,6 +42,7 @@ def starting_url():
     current_no = max_cap-len(selected_user)
     data.append(current_no)
     # tokenlist1 =tokenlist
+    data.append(dq_method)
     tokenlist.clear()
     return jsonify(data)
 
