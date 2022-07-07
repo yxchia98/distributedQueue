@@ -22,7 +22,7 @@ def validator(token):
         stub = waitingroom_pb2_grpc.ValidatorStub(channel)
         response = stub.ValidateToken(waitingroom_pb2.ValidateTokenRequest(token=token))
         print(response.validated)
-        return response.validated
+        return True if response.validated == "true" else False
 
 
 def dequeue(type):
