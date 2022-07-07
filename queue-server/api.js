@@ -128,11 +128,7 @@ module.exports = class API {
           let selected = results[0];
           const filter = { _id: selected._id };
           const options = { upsert: false };
-          const salt = await bcrypt.genSalt(10);
-          const token = await bcrypt.hash(
-            selected.ipaddr.concat(selected.sessionId).concat(selected.phonenum),
-            salt
-          ); // hashing for token
+          const token = crypto.createHash('sha256').update(selected.ipaddr.concat(selected.sessionId).concat(selected.phonenum)).digest('base64');  // hashing for token
           const updateDoc = {
             $set: { inqueue: false, outTime: new Date(), token: token },
           };
@@ -174,11 +170,8 @@ module.exports = class API {
               : results[0]; // randomly select a person in queue
           const filter = { _id: selected._id };
           const options = { upsert: false };
-          const salt = await bcrypt.genSalt(10);
-          const token = await bcrypt.hash(
-            selected.ipaddr.concat(selected.sessionId).concat(selected.phonenum),
-            salt
-          ); // hashing for token
+          const token = crypto.createHash('sha256').update(selected.ipaddr.concat(selected.sessionId).concat(selected.phonenum)).digest('base64');  // hashing for token
+
           const updateDoc = {
             $set: { inqueue: false, outTime: new Date(), token: token },
           };

@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: queueserver-configmap
 data:
-  target_endpoint: "www.google.com"
+  target_endpoint: "http://127.0.0.1:5000"
