@@ -21,7 +21,7 @@ def validator(token):
     with grpc.insecure_channel(GRPC_SERVER_URL) as channel:
         stub = waitingroom_pb2_grpc.ValidatorStub(channel)
         response = stub.ValidateToken(waitingroom_pb2.ValidateTokenRequest(token=token))
-        print(response.validated)
+        print(response)
         return True if response.validated == "true" else False
 
 
@@ -30,20 +30,24 @@ def dequeue(type):
         stub = waitingroom_pb2_grpc.DequeueStub(channel)
 
         if type == 0:
+            print("deququing la")
             response = stub.DequeueFirstCustomer(
                 waitingroom_pb2.DequeueCustomerRequest()
             )
+            print(response)
         else:
             response = stub.DequeueRandomCustomer(
                 waitingroom_pb2.DequeueCustomerRequest()
             )
-        return {
+        dequeue_reply = {
             "ipaddr": response.ipaddr,
             "macaddr": response.macaddr,
             "phonenum": response.phonenum,
             "inTime": response.inTime,
             "outTime": response.outTime,
         }
+        print(dequeue_reply)
+        return dequeue_reply
 
 
 async def health_check():
@@ -94,7 +98,7 @@ async def health_check():
             print(f"dequeuing total: {dequeue_count}")
             # to send dequeue request to gRPC server
             for q in range(dequeue_count):
-                print(f"dequeue #{q}")
+                print(f"dequeue #{q} type: {dequeue_type}")
                 dequeue(dequeue_type)
         except:
             print("error")

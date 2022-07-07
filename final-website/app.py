@@ -8,7 +8,7 @@ app = Flask(__name__)
 tokenlist1 = []
 tokenlist = []
 selected_user = []
-max_cap = 10
+max_cap = 3
 approved = []
 invalid = []
 dq_method = 0
@@ -107,6 +107,7 @@ def validate():
 
 
 # randomly cheeck user out every 5 second
+@app.route("/checkout", methods=["GET"])
 def checkout_user():
     randomnum = random.randint(0, max_cap - 1)
     selected_user.pop(randomnum) if selected_user else None
