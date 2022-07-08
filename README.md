@@ -114,3 +114,17 @@ minikube service mongo-nodeport-service --url
 minikube service mongoexpress-nodeport-service --url
 minikube service waitingroom-node-nodeport-service --url
 ```
+
+# Deploying the Master Decision Node (MDN)
+
+Navigate into the `master-decision-client` folder.
+
+### Generate Stub if needed
+
+`python3 -m grpc_tools.protoc -I./ --python_out=. --grpc_python_out=. ./waitingroom.proto`
+
+### Edit Environmental Variables
+Set the IP address of the final website and queue-server. `127.0.0.1` and `localhost` is not supported, even if they are deployed on the same machine. Please use the `192.168.1.x` IP address. 
+### Use Docker Compose to run
+This will build the container and sets the network mode to host.
+`docker-compose up --build -d`
