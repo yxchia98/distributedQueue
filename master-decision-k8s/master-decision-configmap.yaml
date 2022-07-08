@@ -1,0 +1,6 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: master-decision-configmap
+data:
+  final_website_url: "http://localhost:5000"

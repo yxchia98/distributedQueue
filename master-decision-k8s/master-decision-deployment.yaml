@@ -19,11 +19,13 @@ spec:
       containers:
         - image: yxchia98/master-decision-node
           name: master-decision
+          command:
+            - "python master-decision-node.py"
           env:
             - name: GRPC_SERVER_URL
               value: queue-server-nodeport-service.default.svc.cluster.local:50051
             - name: FINAL_PAGE_SERVER_URL
               valueFrom:
                 configMapKeyRef:
-                  name: queueserver-configmap
-                  key: target_endpoint
+                  name: master-decision-configmap
+                  key: final_website_url
