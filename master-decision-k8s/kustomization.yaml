@@ -3,3 +3,4 @@ kind: Kustomization
 
 resources:
   - master-decision-deployment.yaml
+  - master-decision-nodeport-service.yaml
