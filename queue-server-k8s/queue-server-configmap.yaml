@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: queueserver-configmap
 data:
-  target_endpoint: "localhost:5000"
+  target_endpoint: "http://localhost:5000"

@@ -63,7 +63,7 @@ function App() {
             let status = res.getSelected();
             if (status == true) {
                 let token = res.getToken()
-                window.location.assign("http://" + res.getUrl() + "/gettoken?token=" + token);
+                window.location.assign(res.getUrl() + "/gettoken?token=" + token);
             }
         });
     };

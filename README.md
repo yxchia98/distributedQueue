@@ -48,6 +48,7 @@ kubectl apply -k ./mongo-k8s
 kubectl apply -k ./mongo-express-k8s
 kubectl apply -k ./queue-server-k8s
 kubectl apply -k ./envoy-k8s
+kubectl apply -k ./master-decision-k8s
 ```
 
 Start Linkerd Dashboard (open a new terminal):
