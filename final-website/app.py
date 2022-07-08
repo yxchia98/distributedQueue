@@ -47,7 +47,7 @@ def results(token):
     global invalid
     global tokenlist1
     print(tokenlist1)
-    print(selected_user)
+    print(str(selected_user) + "at redirct token founction")
     for x in range(len(tokenlist1)):
         if tokenlist1[x] in selected_user:
             print("token " + str(tokenlist1[x]) + " valid")
@@ -92,6 +92,7 @@ def starting_url():
 @app.route("/validatetoken", methods=["POST"])
 def validate():
     global selected_user
+    print(f"{str(selected_user)} at validatetoken function")
     # retrieving data from brandon, commented because i m using dummy data
     request_data = json.loads(request.get_json())
     print(f"requested data: {request_data}")
@@ -112,6 +113,7 @@ def checkout_user():
     randomnum = random.randint(0, max_cap - 1)
     selected_user.pop(randomnum) if selected_user else None
     print(selected_user)
+    return "checked out 1 user"
 
 
 sched = BackgroundScheduler(daemon=True)

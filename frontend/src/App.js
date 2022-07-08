@@ -50,11 +50,11 @@ function App() {
         }
     }, [ip]);
 
-    let startGrpcStream = () => {
+    let startGrpcStream = (sessionIdParam) => {
         const request = new WaitQueueRequest();
 
         request.setIpaddr(ip);
-        request.setSessionid(sessionId);
+        request.setSessionid(sessionIdParam);
         request.setPhonenum(phoneNum);
 
         let stream = client.waitQueue(request);
@@ -69,6 +69,7 @@ function App() {
     };
 
     let startQueue = (e) => {
+        let temp_sess = Math.random().toString(12).slice(2)
         e.preventDefault();
         const response = captchaRef.current.getValue();
 
@@ -76,8 +77,17 @@ function App() {
             console.log("Not checked");
         } else {
             const request = new EnqueueCustomerRequest();
+
+            if (sessionId === null) {
+                request.setSessionid(temp_sess);
+                setSessionId(temp_sess);
+            } else {
+                temp_sess = sessionId
+                request.setSessionid(sessionId);
+            }
+
             request.setIpaddr(ip);
-            request.setSessionid(sessionId);
+
             request.setPhonenum(e.target[0].value);
 
             client.enqueueCustomer(request, {}, (err, response) => {
@@ -88,7 +98,7 @@ function App() {
                     console.log(responseMessage);
                     if (responseMessage === "added to queue") {
                         setQueuedUp(true);
-                        startGrpcStream();
+                        startGrpcStream(temp_sess);
                     }
                 }
             });

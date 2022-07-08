@@ -10,8 +10,8 @@ import waitingroom_pb2
 import waitingroom_pb2_grpc
 
 
-GRPC_SERVER_URL = os.environ['GRPC_SERVER_URL']
-FINAL_PAGE_SERVER_URL = os.environ['FINAL_PAGE_SERVER_URL']
+GRPC_SERVER_URL = os.environ["GRPC_SERVER_URL"]
+FINAL_PAGE_SERVER_URL = os.environ["FINAL_PAGE_SERVER_URL"]
 
 
 async def run_parallel(*functions):
@@ -74,7 +74,7 @@ async def health_check():
             for token in pending_unvalidated_tokens:
                 print(f"validating: {token}")
                 if validator(token):
-                    if len(can_process) <= max_cap - current_in_store:
+                    if len(can_process) < max_cap - current_in_store:
                         can_process.append(token)
                         print(f"{token} can process")
                     else:
