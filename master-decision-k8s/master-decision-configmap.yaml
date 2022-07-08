@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: master-decision-configmap
 data:
-  final_website_url: "http://localhost:5000"
+  final_website_url: "http://172.30.136.40:5000"
